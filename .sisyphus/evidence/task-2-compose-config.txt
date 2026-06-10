@@ -1,0 +1,29 @@
+time="2026-06-10T09:28:42-03:00" level=warning msg="/home/with/Projects/notify/backend/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+name: backend
+services:
+  postgres:
+    container_name: notify-postgres
+    environment:
+      POSTGRES_DB: notify
+      POSTGRES_PASSWORD: notify
+      POSTGRES_USER: notify
+    image: postgres:16
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 5432
+        published: "5432"
+        protocol: tcp
+    restart: unless-stopped
+    volumes:
+      - type: volume
+        source: pgdata
+        target: /var/lib/postgresql/data
+        volume: {}
+networks:
+  default:
+    name: backend_default
+volumes:
+  pgdata:
+    name: backend_pgdata

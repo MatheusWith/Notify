@@ -1,0 +1,8 @@
+=== BUILD EVIDENCE ===
+mvnw clean package - EXIT_CODE=0 (BUILD SUCCESS)
+
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.765 s -- in com.notify.shared.HealthControllerTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+
+=== VERIFIED: build + test + start ===
