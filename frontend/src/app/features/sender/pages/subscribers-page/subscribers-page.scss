@@ -1,0 +1,95 @@
+.page-container {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.header h2 {
+  margin: 0;
+}
+
+.total-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  padding: 0 0.5rem;
+  border-radius: 0.75rem;
+  background: var(--tui-background-accent-1);
+  color: var(--tui-text-primary-on-accent-1);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.subscriber-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.subscriber-card {
+  background: var(--tui-background-elevation-1);
+  border: 1px solid var(--tui-border-normal);
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.card-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.subscriber-name {
+  font-weight: 500;
+  font-size: 0.9375rem;
+  color: var(--tui-text-primary);
+  word-break: break-all;
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.subscriber-date {
+  font-size: 0.8125rem;
+  color: var(--tui-text-tertiary);
+}
+
+.status-tag {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+  white-space: nowrap;
+}
+
+.status-confirmed {
+  color: var(--tui-text-positive);
+  background: color-mix(in srgb, var(--tui-text-positive) 12%, transparent);
+}
+
+.status-pending {
+  color: var(--tui-text-secondary);
+  background: color-mix(in srgb, var(--tui-text-secondary) 12%, transparent);
+}
+
+.status-expired {
+  color: var(--tui-text-negative);
+  background: color-mix(in srgb, var(--tui-text-negative) 12%, transparent);
+}

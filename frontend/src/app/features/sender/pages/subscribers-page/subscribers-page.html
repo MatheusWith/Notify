@@ -1,0 +1,43 @@
+<div class="page-container">
+  @if (loading()) {
+    <tui-block-status>
+      <p>Loading subscribers...</p>
+    </tui-block-status>
+  } @else if (error()) {
+    <tui-block-status>
+      <h2>{{ error() }}</h2>
+    </tui-block-status>
+  } @else {
+    <div class="header">
+      <h2>Subscribers</h2>
+      <span class="total-badge">{{ totalCount() }}</span>
+    </div>
+
+    @if (subscribers().length === 0) {
+      <tui-block-status>
+        <p>No subscribers yet</p>
+      </tui-block-status>
+    } @else {
+      <div class="subscriber-grid">
+        @for (sub of subscribers(); track $index) {
+          <div class="subscriber-card">
+            <div class="card-main">
+              <span class="subscriber-name">{{ sub.name }}</span>
+              <span
+                class="status-tag"
+                [class.status-confirmed]="sub.status === 'CONFIRMED'"
+                [class.status-pending]="sub.status === 'PENDING'"
+                [class.status-expired]="sub.status === 'EXPIRED'"
+              >
+                {{ sub.status }}
+              </span>
+            </div>
+            <div class="card-meta">
+              <span class="subscriber-date">{{ sub.createdAt | date: 'medium' }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>
