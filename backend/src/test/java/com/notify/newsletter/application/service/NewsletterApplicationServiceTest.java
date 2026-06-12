@@ -125,7 +125,7 @@ class NewsletterApplicationServiceTest {
     }
 
     @Test
-    void givenSubscribersWithoutUserId_whenListSubscribers_thenFiltersThemOut() {
+    void givenSubscribersWithoutUserId_whenListSubscribers_thenShowsEmailAsName() {
         Newsletter newsletter = createNewsletter(senderId);
 
         when(newsletterRepository.findBySlug("test-newsletter")).thenReturn(Optional.of(newsletter));
@@ -139,8 +139,9 @@ class NewsletterApplicationServiceTest {
 
         Page<SubscriberResponse> result = service.listSubscribers("test-newsletter", senderId, pageable);
 
-        assertThat(result).hasSize(1);
-        assertThat(result.getContent().get(0).name()).isEqualTo("Alice");
+        assertThat(result).hasSize(2);
+        assertThat(result.getContent()).extracting(SubscriberResponse::name)
+                .containsExactlyInAnyOrder("Alice", "subnull@example.com");
     }
 
     @Test

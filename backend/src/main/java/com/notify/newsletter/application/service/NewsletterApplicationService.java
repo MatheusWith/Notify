@@ -153,11 +153,15 @@ public class NewsletterApplicationService implements NewsletterUseCase {
         Page<Subscription> subscriptions = subscriptionRepository.findByNewsletterId(newsletter.getId(), pageable);
 
         List<SubscriberResponse> responses = subscriptions.stream()
-                .filter(sub -> sub.getSubscriberId() != null)
                 .map(sub -> {
-                    String name = userRepository.findById(UserId.of(sub.getSubscriberId()))
-                            .map(User::getName)
-                            .orElse("Unknown");
+                    String name;
+                    if (sub.getSubscriberId() != null) {
+                        name = userRepository.findById(UserId.of(sub.getSubscriberId()))
+                                .map(User::getName)
+                                .orElse("Unknown");
+                    } else {
+                        name = sub.getEmail().value();
+                    }
                     return new SubscriberResponse(name, sub.getStatus().name(), sub.getCreatedAt());
                 })
                 .toList();
