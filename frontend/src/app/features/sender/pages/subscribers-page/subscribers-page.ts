@@ -1,14 +1,14 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../../../environments/environment';
+import { AppConfigService } from '../../../../core/services/app-config.service';
 import { SubscriberResponse } from '../../../../shared/models/newsletter.types';
-import { TuiBlockStatusComponent } from '@taiga-ui/layout';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-subscribers-page',
-  imports: [TuiBlockStatusComponent, DatePipe],
+  imports: [MatCardModule, DatePipe],
   templateUrl: './subscribers-page.html',
   styleUrl: './subscribers-page.scss',
 })
@@ -17,6 +17,8 @@ export class SubscribersPage {
   readonly totalCount = signal(0);
   readonly loading = signal(true);
   readonly error = signal('');
+
+  private readonly appConfig = inject(AppConfigService);
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -36,7 +38,7 @@ export class SubscribersPage {
       .get<{
         content: SubscriberResponse[];
         totalElements: number;
-      }>(`${environment.apiUrl}/newsletter/${slug}/subscribers`)
+      }>(`${this.appConfig.apiUrl}/newsletter/${slug}/subscribers`)
       .subscribe({
         next: (page) => {
           this.subscribers.set(page.content);

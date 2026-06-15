@@ -3,9 +3,10 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideHttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { By } from '@angular/platform-browser';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { provideAnimations } from '@angular/platform-browser/animations';
 import { SubscribersPage } from './subscribers-page';
-import { environment } from '../../../../../environments/environment';
+
+const API_URL = '/api/v1';
 
 describe('SubscribersPage', () => {
   let fixture: ComponentFixture<SubscribersPage>;
@@ -28,7 +29,7 @@ describe('SubscribersPage', () => {
             },
           },
         },
-        provideNoopAnimations(),
+        provideAnimations(),
         provideHttpClient(),
         provideHttpClientTesting(),
       ],
@@ -45,18 +46,18 @@ describe('SubscribersPage', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-    httpMock.expectOne(`${environment.apiUrl}/newsletter/${slug}/subscribers`).flush({ content: [], totalElements: 0 });
+    httpMock.expectOne(`${API_URL}/newsletter/${slug}/subscribers`).flush({ content: [], totalElements: 0 });
   });
 
   it('should have loading state initially and show loading indicator', () => {
     expect(component.loading()).toBe(true);
 
     fixture.detectChanges();
-    const blockStatus = fixture.debugElement.query(By.css('tui-block-status'));
-    expect(blockStatus).toBeTruthy();
-    expect(blockStatus.nativeElement.textContent).toContain('Loading');
+    const statusCard = fixture.debugElement.query(By.css('mat-card'));
+    expect(statusCard).toBeTruthy();
+    expect(statusCard.nativeElement.textContent).toContain('Loading');
 
-    httpMock.expectOne(`${environment.apiUrl}/newsletter/${slug}/subscribers`).flush({ content: [], totalElements: 0 });
+    httpMock.expectOne(`${API_URL}/newsletter/${slug}/subscribers`).flush({ content: [], totalElements: 0 });
   });
 
   it('should display subscribers when data loads successfully', () => {
@@ -70,7 +71,7 @@ describe('SubscribersPage', () => {
       totalElements: 2,
     };
 
-    const req = httpMock.expectOne(`${environment.apiUrl}/newsletter/${slug}/subscribers`);
+    const req = httpMock.expectOne(`${API_URL}/newsletter/${slug}/subscribers`);
     expect(req.request.method).toBe('GET');
     req.flush(mockResponse);
 
@@ -93,7 +94,7 @@ describe('SubscribersPage', () => {
   it('should show empty state when no subscribers exist', () => {
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(`${environment.apiUrl}/newsletter/${slug}/subscribers`);
+    const req = httpMock.expectOne(`${API_URL}/newsletter/${slug}/subscribers`);
     req.flush({ content: [], totalElements: 0 });
 
     fixture.detectChanges();
@@ -101,15 +102,15 @@ describe('SubscribersPage', () => {
     expect(component.subscribers()).toHaveLength(0);
     expect(component.totalCount()).toBe(0);
 
-    const blockStatus = fixture.debugElement.query(By.css('tui-block-status'));
-    expect(blockStatus).toBeTruthy();
-    expect(blockStatus.nativeElement.textContent).toContain('No subscribers yet');
+    const statusCard = fixture.debugElement.query(By.css('mat-card'));
+    expect(statusCard).toBeTruthy();
+    expect(statusCard.nativeElement.textContent).toContain('No subscribers yet');
   });
 
   it('should show newsletter not found on 404 error', () => {
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(`${environment.apiUrl}/newsletter/${slug}/subscribers`);
+    const req = httpMock.expectOne(`${API_URL}/newsletter/${slug}/subscribers`);
     req.flush({ message: 'Not found' }, { status: 404, statusText: 'Not Found' });
 
     fixture.detectChanges();
@@ -117,7 +118,7 @@ describe('SubscribersPage', () => {
     expect(component.loading()).toBe(false);
     expect(component.error()).toBe('Newsletter not found');
 
-    const errorMsg = fixture.debugElement.query(By.css('tui-block-status h2'));
+    const errorMsg = fixture.debugElement.query(By.css('mat-card h2'));
     expect(errorMsg).toBeTruthy();
     expect(errorMsg.nativeElement.textContent).toBe('Newsletter not found');
   });
@@ -125,7 +126,7 @@ describe('SubscribersPage', () => {
   it('should show forbidden error on 403 error', () => {
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(`${environment.apiUrl}/newsletter/${slug}/subscribers`);
+    const req = httpMock.expectOne(`${API_URL}/newsletter/${slug}/subscribers`);
     req.flush({ message: 'Forbidden' }, { status: 403, statusText: 'Forbidden' });
 
     fixture.detectChanges();
@@ -136,7 +137,7 @@ describe('SubscribersPage', () => {
   it('should show generic error on unexpected server error', () => {
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(`${environment.apiUrl}/newsletter/${slug}/subscribers`);
+    const req = httpMock.expectOne(`${API_URL}/newsletter/${slug}/subscribers`);
     req.flush({ message: 'Server error' }, { status: 500, statusText: 'Server Error' });
 
     fixture.detectChanges();
@@ -156,7 +157,7 @@ describe('SubscribersPage', () => {
       totalElements: 3,
     };
 
-    const req = httpMock.expectOne(`${environment.apiUrl}/newsletter/${slug}/subscribers`);
+    const req = httpMock.expectOne(`${API_URL}/newsletter/${slug}/subscribers`);
     req.flush(mockResponse);
 
     fixture.detectChanges();
