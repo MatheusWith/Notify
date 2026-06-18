@@ -79,6 +79,13 @@ export class CampaignListPage {
       });
   }
 
+  getPlainTextPreview(html: string): string {
+    if (!html) return '';
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const text = doc.body.textContent || '';
+    return text.length > 100 ? text.slice(0, 100) + '\u2026' : text;
+  }
+
   getStatusClass(status: string): string {
     switch (status) {
       case 'DRAFT':

@@ -1,0 +1,59 @@
+.profile-page {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.profile-card {
+  max-width: 32rem;
+  width: 100%;
+}
+
+.description {
+  color: var(--mat-sys-on-surface-variant);
+  margin-bottom: 1rem;
+}
+
+.subscriber-count {
+  font-size: 0.875rem;
+  color: var(--mat-sys-on-surface-variant);
+  margin-bottom: 0;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+  margin: 1.5rem 0;
+}
+
+.form-field {
+  display: block;
+  margin-bottom: 0.75rem;
+  inline-size: 100%;
+}
+
+.notification-card {
+  margin-bottom: 1rem;
+}
+
+.notification-success {
+  border-inline-start: 4px solid var(--mat-sys-tertiary);
+}
+
+.notification-error {
+  border-inline-start: 4px solid var(--mat-sys-error);
+}
+
+.field-error {
+  font-size: 0.75rem;
+  color: var(--mat-sys-error);
+  margin: 0.25rem 0 0.5rem;
+}
+
+.submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+}

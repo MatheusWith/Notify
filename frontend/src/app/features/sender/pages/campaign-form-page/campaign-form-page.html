@@ -1,0 +1,88 @@
+<div class="form-page">
+  <a class="back-link" [routerLink]="['/sender/newsletters', slug, 'campaigns']">
+    &larr; Back to Campaigns
+  </a>
+
+  <h2>{{ pageTitle() }}</h2>
+
+  @if (loading()) {
+    <mat-card>
+      <mat-card-content>
+        <p>Loading campaign...</p>
+      </mat-card-content>
+    </mat-card>
+  } @else {
+    @if (success()) {
+      <mat-card class="notification-card notification-success" appearance="outlined">
+        <mat-card-content>Campaign saved successfully!</mat-card-content>
+      </mat-card>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      @if (error()) {
+        <mat-card class="notification-card notification-error" appearance="outlined">
+          <mat-card-content>{{ error() }}</mat-card-content>
+        </mat-card>
+      }
+
+      <mat-form-field class="form-field">
+        <mat-label>Subject</mat-label>
+        <input
+          matInput
+          type="text"
+          formControlName="subject"
+          placeholder="Campaign subject"
+        />
+      </mat-form-field>
+
+      @if (form.controls.subject.invalid && form.controls.subject.touched) {
+        @if (form.controls.subject.hasError('required')) {
+          <p class="field-error">Subject is required</p>
+        }
+        @if (form.controls.subject.hasError('maxlength')) {
+          <p class="field-error">Subject must be at most 200 characters</p>
+        }
+      }
+
+      <div class="editor-wrapper">
+        <label class="editor-label">Content</label>
+        <quill-editor
+          formControlName="content"
+          [modules]="quillModules"
+          placeholder="Write your campaign content here..."
+        ></quill-editor>
+      </div>
+
+      @if (form.controls.content.invalid && form.controls.content.touched) {
+        @if (form.controls.content.hasError('required')) {
+          <p class="field-error">Content is required</p>
+        }
+        @if (form.controls.content.hasError('maxlength')) {
+          <p class="field-error">Content must be at most 20000 characters</p>
+        }
+      }
+
+      <mat-form-field class="form-field">
+        <mat-label>Scheduled Date (optional)</mat-label>
+        <input
+          matInput
+          type="datetime-local"
+          formControlName="scheduledAt"
+        />
+      </mat-form-field>
+
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        class="submit-btn"
+        [disabled]="saving()"
+      >
+        @if (saving()) {
+          <mat-spinner diameter="20"></mat-spinner>
+        }
+        <span>{{ isEditMode() ? 'Update Campaign' : 'Create Campaign' }}</span>
+      </button>
+    </form>
+  }
+</div>

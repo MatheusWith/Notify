@@ -1,9 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { ActivatedRoute, provideRouter } from '@angular/router';
+import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { QuillModule } from 'ngx-quill';
 import { CampaignFormPage } from './campaign-form-page';
 
 const API_URL = '/api/v1';
@@ -17,7 +18,7 @@ describe('CampaignFormPage (create mode)', () => {
   beforeEach(async () => {
     TestBed.resetTestingModule();
     await TestBed.configureTestingModule({
-      imports: [CampaignFormPage],
+      imports: [CampaignFormPage, QuillModule],
       providers: [
         provideRouter([]),
         {
@@ -65,7 +66,10 @@ describe('CampaignFormPage (create mode)', () => {
     expect(component.form.controls.content.invalid).toBe(true);
   });
 
-  it('should create campaign on valid submission', () => {
+  it('should create campaign on valid submission and redirect', () => {
+    const router = TestBed.inject(Router);
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
     fixture.detectChanges();
 
     component.form.patchValue({
@@ -97,10 +101,17 @@ describe('CampaignFormPage (create mode)', () => {
     fixture.detectChanges();
 
     expect(component.saving()).toBe(false);
-    expect(component.success()).toBe(true);
+    expect(navigateSpy).toHaveBeenCalledWith([
+      '/sender/newsletters',
+      slug,
+      'campaigns',
+    ]);
   });
 
   it('should include scheduledAt when provided', () => {
+    const router = TestBed.inject(Router);
+    vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
     fixture.detectChanges();
 
     component.form.patchValue({
@@ -118,6 +129,19 @@ describe('CampaignFormPage (create mode)', () => {
     expect(body['scheduledAt']).toBeDefined();
     expect(body['subject']).toBe('Scheduled');
     req.flush({} as any);
+  });
+
+  it('should treat empty Quill content as invalid', () => {
+    fixture.detectChanges();
+
+    component.form.patchValue({
+      subject: 'Valid Subject',
+      content: '<p><br></p>',
+    });
+
+    component.onSubmit();
+
+    expect(component.form.controls.content.invalid).toBe(true);
   });
 
   it('should show error notification on API failure', () => {
@@ -156,7 +180,7 @@ describe('CampaignFormPage (edit mode)', () => {
   beforeEach(async () => {
     TestBed.resetTestingModule();
     await TestBed.configureTestingModule({
-      imports: [CampaignFormPage],
+      imports: [CampaignFormPage, QuillModule],
       providers: [
         provideRouter([]),
         {

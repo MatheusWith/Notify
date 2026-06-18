@@ -1,9 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { AppConfigService } from '../../../../core/services/app-config.service';
 import { Campaign } from '../../../../shared/models/newsletter.types';
+import { QuillModule } from 'ngx-quill';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -15,6 +16,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   imports: [
     ReactiveFormsModule,
     RouterLink,
+    QuillModule,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
@@ -27,13 +29,14 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 export class CampaignFormPage {
   private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly http = inject(HttpClient);
   private readonly appConfig = inject(AppConfigService);
   private readonly apiUrl = this.appConfig.apiUrl;
 
   readonly form = this.fb.nonNullable.group({
     subject: ['', [Validators.required, Validators.maxLength(200)]],
-    content: ['', [Validators.required, Validators.maxLength(5000)]],
+    content: ['', [Validators.required, Validators.maxLength(20000), quillRequiredValidator]],
     scheduledAt: [''],
   });
 
@@ -46,6 +49,18 @@ export class CampaignFormPage {
 
   readonly slug: string = '';
   private campaignId: string | null = null;
+
+  readonly quillModules = {
+    toolbar: [
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ header: [1, 2, 3, false] }],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      ['blockquote', 'code-block'],
+      [{ align: [] }],
+      ['link'],
+      ['clean'],
+    ],
+  };
 
   constructor() {
     this.slug = this.route.snapshot.paramMap.get('slug') ?? '';
@@ -108,10 +123,15 @@ export class CampaignFormPage {
     request$.subscribe({
       next: () => {
         this.saving.set(false);
-        this.success.set(true);
 
         if (!this.isEditMode()) {
-          this.form.reset();
+          this.router.navigate([
+            '/sender/newsletters',
+            this.slug,
+            'campaigns',
+          ]);
+        } else {
+          this.success.set(true);
         }
       },
       error: () => {
@@ -127,7 +147,7 @@ export class CampaignFormPage {
     const raw = this.form.getRawValue();
     const body: Record<string, string> = {
       subject: raw.subject.trim(),
-      content: raw.content.trim(),
+      content: this.isContentEmpty(raw.content) ? '' : raw.content,
     };
 
     if (raw.scheduledAt) {
@@ -136,4 +156,16 @@ export class CampaignFormPage {
 
     return body;
   }
+
+  private isContentEmpty(html: string): boolean {
+    return !html || html === '<p><br></p>' || html === '<p></p>';
+  }
+}
+
+function quillRequiredValidator(control: AbstractControl): ValidationErrors | null {
+  const value: string = control.value || '';
+  if (!value || value === '<p><br></p>' || value === '<p></p>') {
+    return { required: true };
+  }
+  return null;
 }

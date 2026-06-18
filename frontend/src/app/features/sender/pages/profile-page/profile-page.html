@@ -1,0 +1,107 @@
+<div class="profile-page">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>My Profile</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <!-- Loading -->
+      @if (loading()) {
+        <div class="loading">
+          <mat-spinner diameter="32" />
+        </div>
+      }
+
+      <!-- Error -->
+      @if (error() && !loading()) {
+        <div class="error-notification">{{ error() }}</div>
+      }
+
+      <!-- View Mode -->
+      @if (!loading() && !isEditing() && user(); as u) {
+        <div class="info-grid">
+          <div class="info-row">
+            <span class="label">Name</span>
+            <span class="value">{{ u.name }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Email</span>
+            <span class="value">{{ u.email }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Roles</span>
+            <span class="value">
+              @for (role of u.roles; track role) {
+                <span class="role-badge">{{ role }}</span>
+              }
+            </span>
+          </div>
+          <div class="info-row">
+            <span class="label">Member since</span>
+            <span class="value">{{ u.createdAt | date:'mediumDate' }}</span>
+          </div>
+        </div>
+
+        @if (success()) {
+          <div class="success-notification">Profile updated successfully!</div>
+        }
+
+        <div class="actions">
+          <button mat-raised-button color="primary" (click)="startEditing()">
+            Edit Profile
+          </button>
+        </div>
+      }
+
+      <!-- Edit Mode -->
+      @if (!loading() && isEditing()) {
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+          <mat-form-field class="form-field">
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name" />
+            @if (form.controls.name.hasError('required')) {
+              <mat-error>Name is required</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field class="form-field">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" formControlName="email" />
+            @if (form.controls.email.hasError('required')) {
+              <mat-error>Email is required</mat-error>
+            }
+            @if (form.controls.email.hasError('email')) {
+              <mat-error>Invalid email format</mat-error>
+            }
+          </mat-form-field>
+
+          @if (error()) {
+            <div class="error-notification">{{ error() }}</div>
+          }
+
+          <div class="form-actions">
+            <button
+              mat-stroked-button
+              type="button"
+              (click)="cancelEditing()"
+              [disabled]="saving()"
+            >
+              Cancel
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              [disabled]="saving()"
+            >
+              @if (saving()) {
+                <mat-spinner diameter="20" />
+              }
+              Save
+            </button>
+          </div>
+        </form>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

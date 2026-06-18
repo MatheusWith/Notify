@@ -74,7 +74,7 @@ describe('CampaignListPage', () => {
           id: '1',
           newsletterId: 'n1',
           subject: 'Campaign 1',
-          content: 'Content 1',
+          content: '<p>Content 1</p>',
           status: 'DRAFT',
           scheduledAt: null,
           createdAt: '2025-01-01T00:00:00Z',
@@ -84,7 +84,7 @@ describe('CampaignListPage', () => {
           id: '2',
           newsletterId: 'n1',
           subject: 'Campaign 2',
-          content: 'Content 2',
+          content: '<p>Content 2</p>',
           status: 'PUBLISHED',
           scheduledAt: '2025-02-01T00:00:00Z',
           createdAt: '2025-01-15T00:00:00Z',
@@ -109,6 +109,7 @@ describe('CampaignListPage', () => {
     const rows = fixture.debugElement.queryAll(By.css('tbody tr'));
     expect(rows).toHaveLength(2);
     expect(rows[0].nativeElement.textContent).toContain('Campaign 1');
+    expect(rows[0].nativeElement.textContent).toContain('Content 1');
   });
 
   it('should show empty state when no campaigns', () => {
@@ -145,6 +146,21 @@ describe('CampaignListPage', () => {
 
     expect(component.loading()).toBe(false);
     expect(component.error()).toBe('Failed to load campaigns. Please try again.');
+  });
+
+  it('should extract plain text preview from HTML content', () => {
+    fixture.detectChanges();
+    httpMock.expectOne(`${API_URL}/newsletter/${slug}/campaigns`).flush({ content: [], totalElements: 0 });
+
+    expect(component.getPlainTextPreview('<p>Hello <strong>World</strong></p>')).toBe('Hello World');
+    expect(component.getPlainTextPreview('Plain text')).toBe('Plain text');
+    expect(component.getPlainTextPreview('')).toBe('');
+    expect(component.getPlainTextPreview(null as unknown as string)).toBe('');
+
+    const longHtml = '<p>' + 'A'.repeat(150) + '</p>';
+    const preview = component.getPlainTextPreview(longHtml);
+    expect(preview.length).toBe(101); // 100 chars + ellipsis
+    expect(preview.endsWith('\u2026')).toBe(true);
   });
 
   it('should show Edit and Delete buttons only for editable campaigns', () => {

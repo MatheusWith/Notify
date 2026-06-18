@@ -23,8 +23,8 @@
   height: 1.5rem;
   padding: 0 0.5rem;
   border-radius: 0.75rem;
-  background: var(--tui-background-accent-1);
-  color: var(--tui-text-primary-on-accent-1);
+  background: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
   font-size: 0.75rem;
   font-weight: 600;
   line-height: 1;
@@ -37,13 +37,11 @@
 }
 
 .subscriber-card {
-  background: var(--tui-background-elevation-1);
-  border: 1px solid var(--tui-border-normal);
-  border-radius: 0.75rem;
-  padding: 1rem 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.375rem;
+  mat-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
 }
 
 .card-main {
@@ -56,7 +54,7 @@
 .subscriber-name {
   font-weight: 500;
   font-size: 0.9375rem;
-  color: var(--tui-text-primary);
+  color: var(--mat-sys-on-surface);
   word-break: break-all;
 }
 
@@ -68,7 +66,7 @@
 
 .subscriber-date {
   font-size: 0.8125rem;
-  color: var(--tui-text-tertiary);
+  color: var(--mat-sys-on-surface-variant);
 }
 
 .status-tag {
@@ -80,16 +78,16 @@
 }
 
 .status-confirmed {
-  color: var(--tui-text-positive);
-  background: color-mix(in srgb, var(--tui-text-positive) 12%, transparent);
+  color: var(--mat-sys-tertiary);
+  background: color-mix(in srgb, var(--mat-sys-tertiary) 12%, var(--mat-sys-surface-container));
 }
 
 .status-pending {
-  color: var(--tui-text-secondary);
-  background: color-mix(in srgb, var(--tui-text-secondary) 12%, transparent);
+  color: var(--mat-sys-on-surface-variant);
+  background: color-mix(in srgb, var(--mat-sys-on-surface-variant) 8%, var(--mat-sys-surface-container));
 }
 
 .status-expired {
-  color: var(--tui-text-negative);
-  background: color-mix(in srgb, var(--tui-text-negative) 12%, transparent);
+  color: var(--mat-sys-error);
+  background: color-mix(in srgb, var(--mat-sys-error) 12%, var(--mat-sys-surface-container));
 }

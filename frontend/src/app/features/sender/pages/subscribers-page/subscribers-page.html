@@ -1,12 +1,16 @@
 <div class="page-container">
   @if (loading()) {
-    <tui-block-status>
-      <p>Loading subscribers...</p>
-    </tui-block-status>
+    <mat-card>
+      <mat-card-content>
+        <p>Loading subscribers...</p>
+      </mat-card-content>
+    </mat-card>
   } @else if (error()) {
-    <tui-block-status>
-      <h2>{{ error() }}</h2>
-    </tui-block-status>
+    <mat-card>
+      <mat-card-content>
+        <h2>{{ error() }}</h2>
+      </mat-card-content>
+    </mat-card>
   } @else {
     <div class="header">
       <h2>Subscribers</h2>
@@ -14,28 +18,32 @@
     </div>
 
     @if (subscribers().length === 0) {
-      <tui-block-status>
-        <p>No subscribers yet</p>
-      </tui-block-status>
+      <mat-card>
+        <mat-card-content>
+          <p>No subscribers yet</p>
+        </mat-card-content>
+      </mat-card>
     } @else {
       <div class="subscriber-grid">
         @for (sub of subscribers(); track $index) {
-          <div class="subscriber-card">
-            <div class="card-main">
-              <span class="subscriber-name">{{ sub.name }}</span>
-              <span
-                class="status-tag"
-                [class.status-confirmed]="sub.status === 'CONFIRMED'"
-                [class.status-pending]="sub.status === 'PENDING'"
-                [class.status-expired]="sub.status === 'EXPIRED'"
-              >
-                {{ sub.status }}
-              </span>
-            </div>
-            <div class="card-meta">
-              <span class="subscriber-date">{{ sub.createdAt | date: 'medium' }}</span>
-            </div>
-          </div>
+          <mat-card class="subscriber-card" appearance="outlined">
+            <mat-card-content>
+              <div class="card-main">
+                <span class="subscriber-name">{{ sub.name }}</span>
+                <span
+                  class="status-tag"
+                  [class.status-confirmed]="sub.status === 'CONFIRMED'"
+                  [class.status-pending]="sub.status === 'PENDING'"
+                  [class.status-expired]="sub.status === 'EXPIRED'"
+                >
+                  {{ sub.status }}
+                </span>
+              </div>
+              <div class="card-meta">
+                <span class="subscriber-date">{{ sub.createdAt | date: 'medium' }}</span>
+              </div>
+            </mat-card-content>
+          </mat-card>
         }
       </div>
     }

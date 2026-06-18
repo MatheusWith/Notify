@@ -1,0 +1,69 @@
+.form-page {
+  padding: 1.5rem;
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: var(--mat-sys-primary);
+  text-decoration: none;
+  font-size: 0.9rem;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+h2 {
+  margin: 0 0 1.5rem;
+}
+
+.notification-card {
+  margin-bottom: 1rem;
+}
+
+.notification-success {
+  border-inline-start: 4px solid var(--mat-sys-tertiary);
+}
+
+.notification-error {
+  border-inline-start: 4px solid var(--mat-sys-error);
+}
+
+.form-field {
+  display: block;
+  margin-bottom: 1rem;
+  inline-size: 100%;
+}
+
+.editor-wrapper {
+  display: block;
+  margin-bottom: 1rem;
+
+  .editor-label {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 0.85rem;
+  }
+
+  ::ng-deep .ql-editor {
+    min-height: 30rem;
+  }
+}
+
+.field-error {
+  margin: 0.25rem 0 0;
+  color: var(--mat-sys-error);
+  font-size: 0.85rem;
+}
+
+.submit-btn {
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
