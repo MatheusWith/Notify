@@ -1,0 +1,56 @@
+spring:
+  application:
+    name: notify-worker
+  profiles:
+    active: dev
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:notify}
+    password: ${RABBITMQ_PASSWORD:notify}
+    listener:
+      simple:
+        prefetch: 1
+        concurrency: 3
+        max-concurrency: 10
+        retry:
+          enabled: true
+          initial-interval: 1000
+          multiplier: 3
+          max-attempts: 3
+          stateless: true
+        default-requeue-rejected: false
+  mail:
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:1025}
+    username:
+    password:
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
+logging:
+  level:
+    com.notify.worker: DEBUG
+
+server:
+  port: 8081
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+app:
+  rabbitmq:
+    queue:
+      confirmation: newsletter.subscription.confirmation.queue
+    listener:
+      concurrency: 3-10

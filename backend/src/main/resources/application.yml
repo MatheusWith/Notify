@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: notify
+  profiles:
+    active: dev
+
+server:
+  port: 8080
+
+logging:
+  level:
+    com.notify: DEBUG
+
+password:
+  pepper: ${PASSWORD_PEPPER:change-me-in-production}

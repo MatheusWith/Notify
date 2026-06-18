@@ -1,0 +1,13 @@
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: notify
+    password: notify
+  mail:
+    host: localhost
+    port: 1025
+
+logging:
+  level:
+    com.notify.worker: DEBUG
