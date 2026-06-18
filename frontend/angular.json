@@ -30,8 +30,6 @@
               }
             ],
             "styles": [
-              "@taiga-ui/styles/taiga-ui-theme.less",
-              "@taiga-ui/styles/taiga-ui-fonts.less",
               "src/styles.scss"
             ]
           },
