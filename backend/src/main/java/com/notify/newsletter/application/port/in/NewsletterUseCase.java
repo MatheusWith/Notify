@@ -1,17 +1,21 @@
 package com.notify.newsletter.application.port.in;
 
-import com.notify.newsletter.application.dto.ConfirmationResponse;
 import com.notify.newsletter.application.dto.ConfirmSubscriptionRequest;
+import com.notify.newsletter.application.dto.ConfirmationResponse;
 import com.notify.newsletter.application.dto.NewsletterProfileResponse;
+import com.notify.newsletter.application.dto.NewsletterSummaryResponse;
 import com.notify.newsletter.application.dto.SubscribeRequest;
 import com.notify.newsletter.application.dto.SubscribeResponse;
 import com.notify.newsletter.application.dto.SubscriberResponse;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface NewsletterUseCase {
 
     NewsletterProfileResponse getNewsletterInfo(String slug);
+
+    List<NewsletterSummaryResponse> getMyNewsletters(Long senderId);
 
     SubscribeResponse subscribe(SubscribeRequest request);
 
