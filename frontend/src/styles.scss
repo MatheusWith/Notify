@@ -1,0 +1,8 @@
+@use 'styles/theme';
+@import 'quill/dist/quill.snow.css';
+
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  background: var(--mat-sys-surface-container);
+}

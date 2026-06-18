@@ -6,6 +6,7 @@ export class AppConfigService {
 
   constructor() {
     const runtime = (window as any).__RUNTIME_CONFIG;
-    this.apiUrl = runtime?.apiUrl ?? '/api/v1';
+    const baseUrl = runtime?.apiUrl ?? '';
+    this.apiUrl = baseUrl + '/api/v1';
   }
 }

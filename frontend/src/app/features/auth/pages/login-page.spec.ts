@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoginPage } from './login-page';
 import { AuthService } from '../../../core/services/auth.service';
-import { provideRouter } from '@angular/router';
+import { Router, provideRouter } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { of, throwError } from 'rxjs';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -24,7 +24,9 @@ describe('LoginPage', () => {
       imports: [LoginPage],
       providers: [
         { provide: AuthService, useValue: authServiceMock },
-        provideRouter([]),
+        provideRouter([
+          { path: 'sender', redirectTo: '', pathMatch: 'full' },
+        ]),
         provideAnimations(),
       ],
     }).compileComponents();

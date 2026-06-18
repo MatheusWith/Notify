@@ -6,6 +6,7 @@ import {
   AuthResponse,
   LoginRequest,
   RegisterRequest,
+  UpdateUserRequest,
   UserResponse,
 } from '../../shared/models/auth.types';
 
@@ -16,8 +17,15 @@ export class AuthService {
   private readonly appConfig = inject(AppConfigService);
   private readonly apiUrl = this.appConfig.apiUrl;
 
-  private readonly accessTokenSignal = signal<string | null>(null);
-  private readonly refreshTokenSignal = signal<string | null>(null);
+  private readonly ACCESS_TOKEN_KEY = 'notify_access_token';
+  private readonly REFRESH_TOKEN_KEY = 'notify_refresh_token';
+
+  private readonly accessTokenSignal = signal<string | null>(
+    sessionStorage.getItem(this.ACCESS_TOKEN_KEY),
+  );
+  private readonly refreshTokenSignal = signal<string | null>(
+    sessionStorage.getItem(this.REFRESH_TOKEN_KEY),
+  );
   private readonly userSignal = signal<UserResponse | null>(null);
 
   readonly isAuthenticated = computed(() => this.accessTokenSignal() !== null);
@@ -56,14 +64,24 @@ export class AuthService {
       .pipe(tap((user) => this.userSignal.set(user)));
   }
 
+  updateProfile(request: UpdateUserRequest): Observable<UserResponse> {
+    return this.http
+      .put<UserResponse>(`${this.apiUrl}/users/me`, request)
+      .pipe(tap((user) => this.userSignal.set(user)));
+  }
+
   logout(): void {
     this.accessTokenSignal.set(null);
     this.refreshTokenSignal.set(null);
     this.userSignal.set(null);
+    sessionStorage.removeItem(this.ACCESS_TOKEN_KEY);
+    sessionStorage.removeItem(this.REFRESH_TOKEN_KEY);
   }
 
   private setTokens(response: AuthResponse): void {
     this.accessTokenSignal.set(response.accessToken);
     this.refreshTokenSignal.set(response.refreshToken);
+    sessionStorage.setItem(this.ACCESS_TOKEN_KEY, response.accessToken);
+    sessionStorage.setItem(this.REFRESH_TOKEN_KEY, response.refreshToken);
   }
 }

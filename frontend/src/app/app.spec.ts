@@ -1,6 +1,5 @@
 import { TestBed } from '@angular/core/testing';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { TUI_OPTIONS } from '@taiga-ui/core';
 import { App } from './app';
 
 describe('App', () => {
@@ -9,10 +8,6 @@ describe('App', () => {
       imports: [App],
       providers: [
         provideAnimations(),
-        {
-          provide: TUI_OPTIONS,
-          useValue: { scrollbars: 'native', fontScaling: false, apis: 'stable' },
-        },
       ],
     }).compileComponents();
   });

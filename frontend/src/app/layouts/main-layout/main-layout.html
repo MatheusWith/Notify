@@ -1,0 +1,13 @@
+<mat-toolbar color="primary">
+  <a class="brand-link" routerLink="/sender">Notify</a>
+  <span class="spacer"></span>
+  <div class="toolbar-icons">
+    <a mat-icon-button routerLink="/sender/profile" aria-label="Profile">
+      <mat-icon>account_circle</mat-icon>
+    </a>
+    <app-theme-toggle />
+  </div>
+</mat-toolbar>
+<main>
+  <router-outlet />
+</main>
