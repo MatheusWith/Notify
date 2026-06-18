@@ -6,38 +6,33 @@ import java.util.UUID;
 import lombok.*;
 
 @Entity
-@Table(name = "subscriptions")
+@Table(name = "campaigns")
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class JpaSubscriptionEntity {
+public class JpaCampaignEntity {
 
     @Id
     private UUID id;
 
-    @Column(name = "email", nullable = false, length = 255)
-    private String email;
-
-    @Column(name = "newsletter_id")
+    @Column(name = "newsletter_id", nullable = false)
     private UUID newsletterId;
 
-    @Column(name = "subscriber_id")
-    private Long subscriberId;
+    @Column(nullable = false, length = 200)
+    private String subject;
+
+    @Column(columnDefinition = "TEXT")
+    @Builder.Default
+    private String content = "";
 
     @Column(nullable = false, length = 20)
     @Builder.Default
-    private String status = "PENDING";
+    private String status = "DRAFT";
 
-    @Column(nullable = false)
-    private UUID token;
-
-    @Column(name = "expires_at", nullable = false)
-    private LocalDateTime expiresAt;
-
-    @Column(name = "confirmed_at")
-    private LocalDateTime confirmedAt;
+    @Column(name = "scheduled_at")
+    private LocalDateTime scheduledAt;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @Builder.Default

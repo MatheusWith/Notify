@@ -4,13 +4,12 @@ import com.notify.newsletter.domain.model.SubscriberEmail;
 import com.notify.newsletter.domain.model.Subscription;
 import com.notify.newsletter.domain.model.SubscriptionStatus;
 import com.notify.newsletter.domain.repository.SubscriptionRepository;
+import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
-import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
@@ -43,8 +42,7 @@ public class SubscriptionRepositoryImpl implements SubscriptionRepository {
 
     @Override
     public Optional<Subscription> findByEmailAndStatus(SubscriberEmail email, SubscriptionStatus status) {
-        return jpaSubscriptionRepository.findByEmailAndStatus(email.value(), status.name())
-                .map(mapper::toDomain);
+        return jpaSubscriptionRepository.findByEmailAndStatus(email.value(), status.name()).map(mapper::toDomain);
     }
 
     @Override
@@ -54,7 +52,6 @@ public class SubscriptionRepositoryImpl implements SubscriptionRepository {
 
     @Override
     public Page<Subscription> findByNewsletterId(UUID newsletterId, Pageable pageable) {
-        return jpaSubscriptionRepository.findByNewsletterId(newsletterId, pageable)
-                .map(mapper::toDomain);
+        return jpaSubscriptionRepository.findByNewsletterId(newsletterId, pageable).map(mapper::toDomain);
     }
 }
