@@ -1,19 +1,18 @@
 package com.notify.newsletter.infrastructure.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.notify.newsletter.domain.model.SubscriberEmail;
 import com.notify.newsletter.domain.model.Subscription;
 import com.notify.newsletter.domain.model.SubscriptionStatus;
 import com.notify.newsletter.domain.repository.SubscriptionRepository;
 import com.notify.newsletter.interfaces.AbstractNewsletterIntegrationTest;
+import java.time.LocalDateTime;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class SubscriptionRepositoryTest extends AbstractNewsletterIntegrationTest {
 
@@ -31,8 +30,7 @@ class SubscriptionRepositoryTest extends AbstractNewsletterIntegrationTest {
         Page<Subscription> result = subscriptionRepository.findByNewsletterId(newsletterId, PageRequest.of(0, 10));
 
         assertThat(result).hasSize(2);
-        assertThat(result).extracting(Subscription::getId)
-                .containsExactlyInAnyOrder(sub1.getId(), sub2.getId());
+        assertThat(result).extracting(Subscription::getId).containsExactlyInAnyOrder(sub1.getId(), sub2.getId());
     }
 
     @Test
@@ -63,7 +61,8 @@ class SubscriptionRepositoryTest extends AbstractNewsletterIntegrationTest {
         UUID newsletterId = UUID.randomUUID();
         Long subscriberId = 99L;
 
-        Subscription saved = subscriptionRepository.save(createSubscription(newsletterId, "with-id@example.com", subscriberId));
+        Subscription saved = subscriptionRepository
+                .save(createSubscription(newsletterId, "with-id@example.com", subscriberId));
 
         Page<Subscription> result = subscriptionRepository.findByNewsletterId(newsletterId, PageRequest.of(0, 10));
         assertThat(result).hasSize(1);
@@ -73,14 +72,8 @@ class SubscriptionRepositoryTest extends AbstractNewsletterIntegrationTest {
     }
 
     private Subscription createSubscription(UUID newsletterId, String email, Long subscriberId) {
-        return Subscription.builder()
-                .id(UUID.randomUUID())
-                .email(new SubscriberEmail(email))
-                .newsletterId(newsletterId)
-                .subscriberId(subscriberId)
-                .token(UUID.randomUUID())
-                .expiresAt(LocalDateTime.now().plusHours(24))
-                .status(SubscriptionStatus.CONFIRMED)
-                .build();
+        return Subscription.builder().id(UUID.randomUUID()).email(new SubscriberEmail(email)).newsletterId(newsletterId)
+                .subscriberId(subscriberId).token(UUID.randomUUID()).expiresAt(LocalDateTime.now().plusHours(24))
+                .status(SubscriptionStatus.CONFIRMED).build();
     }
 }

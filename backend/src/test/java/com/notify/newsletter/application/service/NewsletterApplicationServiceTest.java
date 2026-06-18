@@ -1,5 +1,9 @@
 package com.notify.newsletter.application.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
+
 import com.notify.identity.domain.model.User;
 import com.notify.identity.domain.model.UserId;
 import com.notify.identity.domain.repository.UserRepository;
@@ -10,6 +14,10 @@ import com.notify.newsletter.domain.repository.SubscriptionRepository;
 import com.notify.newsletter.infrastructure.config.NewsletterProperties;
 import com.notify.newsletter.infrastructure.messaging.NewsletterEventPublisher;
 import com.notify.shared.application.BusinessException;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,16 +27,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class NewsletterApplicationServiceTest {
@@ -52,32 +50,20 @@ class NewsletterApplicationServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new NewsletterApplicationService(
-                newsletterRepository, subscriptionRepository,
-                eventPublisher, properties, userRepository
-        );
+        service = new NewsletterApplicationService(newsletterRepository, subscriptionRepository, eventPublisher,
+                properties, userRepository);
     }
 
     private Newsletter createNewsletter(Long ownerId) {
-        return Newsletter.builder()
-                .id(newsletterId)
-                .senderId(ownerId)
-                .name("Test Newsletter")
-                .slug(new Slug("test-newsletter"))
-                .build();
+        return Newsletter.builder().id(newsletterId).senderId(ownerId).name("Test Newsletter")
+                .slug(new Slug("test-newsletter")).build();
     }
 
     private Subscription createSubscription(Long subscriberId) {
-        return Subscription.builder()
-                .id(UUID.randomUUID())
-                .email(new SubscriberEmail("sub" + subscriberId + "@example.com"))
-                .newsletterId(newsletterId)
-                .subscriberId(subscriberId)
-                .token(UUID.randomUUID())
-                .expiresAt(LocalDateTime.now().plusHours(24))
-                .status(SubscriptionStatus.CONFIRMED)
-                .createdAt(LocalDateTime.now())
-                .build();
+        return Subscription.builder().id(UUID.randomUUID())
+                .email(new SubscriberEmail("sub" + subscriberId + "@example.com")).newsletterId(newsletterId)
+                .subscriberId(subscriberId).token(UUID.randomUUID()).expiresAt(LocalDateTime.now().plusHours(24))
+                .status(SubscriptionStatus.CONFIRMED).createdAt(LocalDateTime.now()).build();
     }
 
     @Test
@@ -87,20 +73,18 @@ class NewsletterApplicationServiceTest {
         Subscription sub2 = createSubscription(20L);
 
         when(newsletterRepository.findBySlug("test-newsletter")).thenReturn(Optional.of(newsletter));
-        when(subscriptionRepository.findByNewsletterId(newsletterId, pageable))
-                .thenReturn(new PageImpl<>(List.of(sub1, sub2)));
+        Page<Subscription> subscriptionPage = new PageImpl<>(List.of(sub1, sub2), pageable, 25);
+        when(subscriptionRepository.findByNewsletterId(newsletterId, pageable)).thenReturn(subscriptionPage);
         when(userRepository.findById(UserId.of(10L))).thenReturn(Optional.of(createUser(10L, "Alice")));
         when(userRepository.findById(UserId.of(20L))).thenReturn(Optional.of(createUser(20L, "Bob")));
 
         Page<SubscriberResponse> result = service.listSubscribers("test-newsletter", senderId, pageable);
 
         assertThat(result).hasSize(2);
-        assertThat(result).extracting(SubscriberResponse::name)
-                .containsExactlyInAnyOrder("Alice", "Bob");
-        assertThat(result).extracting(SubscriberResponse::status)
-                .allMatch(s -> s.equals("CONFIRMED"));
-        assertThat(result).extracting(SubscriberResponse::createdAt)
-                .isNotNull();
+        assertThat(result.getTotalElements()).isEqualTo(25);
+        assertThat(result).extracting(SubscriberResponse::name).containsExactlyInAnyOrder("Alice", "Bob");
+        assertThat(result).extracting(SubscriberResponse::status).allMatch(s -> s.equals("CONFIRMED"));
+        assertThat(result).extracting(SubscriberResponse::createdAt).isNotNull();
     }
 
     @Test
@@ -108,8 +92,7 @@ class NewsletterApplicationServiceTest {
         when(newsletterRepository.findBySlug("nonexistent")).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.listSubscribers("nonexistent", senderId, pageable))
-                .isInstanceOf(BusinessException.class)
-                .hasFieldOrPropertyWithValue("status", 404);
+                .isInstanceOf(BusinessException.class).hasFieldOrPropertyWithValue("status", 404);
     }
 
     @Test
@@ -120,8 +103,7 @@ class NewsletterApplicationServiceTest {
         when(newsletterRepository.findBySlug("test-newsletter")).thenReturn(Optional.of(newsletter));
 
         assertThatThrownBy(() -> service.listSubscribers("test-newsletter", otherSender, pageable))
-                .isInstanceOf(BusinessException.class)
-                .hasFieldOrPropertyWithValue("status", 403);
+                .isInstanceOf(BusinessException.class).hasFieldOrPropertyWithValue("status", 403);
     }
 
     @Test
@@ -140,8 +122,8 @@ class NewsletterApplicationServiceTest {
         Page<SubscriberResponse> result = service.listSubscribers("test-newsletter", senderId, pageable);
 
         assertThat(result).hasSize(2);
-        assertThat(result.getContent()).extracting(SubscriberResponse::name)
-                .containsExactlyInAnyOrder("Alice", "subnull@example.com");
+        assertThat(result.getContent()).extracting(SubscriberResponse::name).containsExactlyInAnyOrder("Alice",
+                "subnull@example.com");
     }
 
     @Test
@@ -167,8 +149,7 @@ class NewsletterApplicationServiceTest {
         Newsletter newsletter = createNewsletter(senderId);
 
         when(newsletterRepository.findBySlug("test-newsletter")).thenReturn(Optional.of(newsletter));
-        when(subscriptionRepository.findByNewsletterId(newsletterId, pageable))
-                .thenReturn(Page.empty());
+        when(subscriptionRepository.findByNewsletterId(newsletterId, pageable)).thenReturn(Page.empty());
 
         Page<SubscriberResponse> result = service.listSubscribers("test-newsletter", senderId, pageable);
 
@@ -176,9 +157,6 @@ class NewsletterApplicationServiceTest {
     }
 
     private User createUser(Long id, String name) {
-        return User.builder()
-                .id(UserId.of(id))
-                .name(name)
-                .build();
+        return User.builder().id(UserId.of(id)).name(name).build();
     }
 }

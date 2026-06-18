@@ -3,11 +3,10 @@ package com.notify.newsletter.domain.repository;
 import com.notify.newsletter.domain.model.SubscriberEmail;
 import com.notify.newsletter.domain.model.Subscription;
 import com.notify.newsletter.domain.model.SubscriptionStatus;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface SubscriptionRepository {
 

@@ -1,13 +1,12 @@
 package com.notify.newsletter.infrastructure.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.notify.newsletter.domain.model.SubscriberEmail;
 import com.notify.newsletter.domain.model.Subscription;
-import org.junit.jupiter.api.Test;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
 
 class SubscriptionDomainMapperTest {
 
@@ -35,13 +34,8 @@ class SubscriptionDomainMapperTest {
     }
 
     private Subscription createSubscription(Long subscriberId) {
-        return Subscription.builder()
-                .id(UUID.randomUUID())
-                .email(new SubscriberEmail("user@example.com"))
-                .newsletterId(UUID.randomUUID())
-                .subscriberId(subscriberId)
-                .token(UUID.randomUUID())
-                .expiresAt(LocalDateTime.now().plusHours(24))
-                .build();
+        return Subscription.builder().id(UUID.randomUUID()).email(new SubscriberEmail("user@example.com"))
+                .newsletterId(UUID.randomUUID()).subscriberId(subscriberId).token(UUID.randomUUID())
+                .expiresAt(LocalDateTime.now().plusHours(24)).build();
     }
 }
