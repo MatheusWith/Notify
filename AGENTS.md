@@ -721,6 +721,7 @@ main            — Production-ready. Protected. Only merge via PR.
 - Coverage threshold: ≥ 80% lines, ≥ 70% branches.
 - PR title describes the change, not the ticket number.
 - PR body includes: **What** changed, **Why**, **How to test**.
+- **Every commit with testable code MUST include corresponding tests.** Todo código testável adicionado ou modificado em um commit deve vir acompanhado de seus testes (unitários, integração ou smoke conforme o contexto). Commits que introduzem lógica testável sem testes serão rejeitados na revisão.
 
 ### Commit Message Convention
 

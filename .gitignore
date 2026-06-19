@@ -20,7 +20,6 @@ backend/.classpath
 backend/.factorypath
 backend/.project
 backend/.settings/
-backend/eclipse-formatter.xml
 
 # OS
 .DS_Store
