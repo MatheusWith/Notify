@@ -7,6 +7,10 @@ describe('ThemeToggle', () => {
   let themeService: ThemeService;
 
   beforeEach(() => {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem('notify_theme');
+    }
+
     TestBed.configureTestingModule({
       imports: [ThemeToggle],
       providers: [ThemeService],
