@@ -4,36 +4,33 @@ import { provideHttpClient } from '@angular/common/http';
 import { By } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { ProfilePage } from './profile-page';
-import { AuthService } from '../../../../core/services/auth.service';
+
+interface WindowWithConfig {
+  __RUNTIME_CONFIG?: { apiUrl: string };
+}
 
 describe('ProfilePage', () => {
   let fixture: ComponentFixture<ProfilePage>;
   let component: ProfilePage;
   let httpMock: HttpTestingController;
-  let authService: AuthService;
 
   beforeEach(async () => {
-    (window as any).__RUNTIME_CONFIG = { apiUrl: 'http://test' };
+    (window as unknown as WindowWithConfig).__RUNTIME_CONFIG = { apiUrl: 'http://test' };
 
     TestBed.resetTestingModule();
     await TestBed.configureTestingModule({
       imports: [ProfilePage],
-      providers: [
-        provideAnimations(),
-        provideHttpClient(),
-        provideHttpClientTesting(),
-      ],
+      providers: [provideAnimations(), provideHttpClient(), provideHttpClientTesting()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProfilePage);
     component = fixture.componentInstance;
-    authService = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {
     httpMock.verify();
-    (window as any).__RUNTIME_CONFIG = undefined;
+    (window as unknown as WindowWithConfig).__RUNTIME_CONFIG = undefined;
   });
 
   it('should create', () => {
@@ -47,14 +44,16 @@ describe('ProfilePage', () => {
     const spinner = fixture.debugElement.query(By.css('mat-spinner'));
     expect(spinner).toBeTruthy();
 
-    httpMock.expectOne((req) => req.url.includes('/users/me')).flush({
-      id: '1',
-      name: 'Test',
-      email: 'test@test.com',
-      roles: ['USER'],
-      enabled: true,
-      createdAt: '2025-01-01T00:00:00Z',
-    });
+    httpMock
+      .expectOne((req) => req.url.includes('/users/me'))
+      .flush({
+        id: '1',
+        name: 'Test',
+        email: 'test@test.com',
+        roles: ['USER'],
+        enabled: true,
+        createdAt: '2025-01-01T00:00:00Z',
+      });
   });
 
   it('should display user info after loading', () => {

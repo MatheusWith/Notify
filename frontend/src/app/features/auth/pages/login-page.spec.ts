@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoginPage } from './login-page';
 import { AuthService } from '../../../core/services/auth.service';
-import { Router, provideRouter } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { of, throwError } from 'rxjs';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -24,9 +24,7 @@ describe('LoginPage', () => {
       imports: [LoginPage],
       providers: [
         { provide: AuthService, useValue: authServiceMock },
-        provideRouter([
-          { path: 'sender', redirectTo: '', pathMatch: 'full' },
-        ]),
+        provideRouter([{ path: 'sender', redirectTo: '', pathMatch: 'full' }]),
         provideAnimations(),
       ],
     }).compileComponents();
@@ -41,25 +39,17 @@ describe('LoginPage', () => {
   });
 
   it('should render email and password input fields', () => {
-    const emailInput = fixture.debugElement.query(
-      By.css('input[formControlName="email"]'),
-    );
-    const passwordInput = fixture.debugElement.query(
-      By.css('input[formControlName="password"]'),
-    );
+    const emailInput = fixture.debugElement.query(By.css('input[formControlName="email"]'));
+    const passwordInput = fixture.debugElement.query(By.css('input[formControlName="password"]'));
 
     expect(emailInput).toBeTruthy();
     expect(emailInput.nativeElement.getAttribute('type')).toBe('email');
     expect(passwordInput).toBeTruthy();
-    expect((passwordInput.nativeElement as HTMLInputElement).type).toBe(
-      'password',
-    );
+    expect((passwordInput.nativeElement as HTMLInputElement).type).toBe('password');
   });
 
   it('should render submit button', () => {
-    const submitButton = fixture.debugElement.query(
-      By.css('button[type="submit"]'),
-    );
+    const submitButton = fixture.debugElement.query(By.css('button[type="submit"]'));
     expect(submitButton).toBeTruthy();
     expect(submitButton.nativeElement.textContent.trim()).toBe('Sign In');
   });
@@ -143,9 +133,7 @@ describe('LoginPage', () => {
   });
 
   it('should clear previous error on new submit attempt', () => {
-    authServiceMock.login.mockReturnValue(
-      throwError(() => ({ status: 401 })),
-    );
+    authServiceMock.login.mockReturnValue(throwError(() => ({ status: 401 })));
     component.form.controls.email.setValue('bad@b.com');
     component.form.controls.password.setValue('wrong');
     component.onSubmit();
@@ -181,13 +169,9 @@ describe('LoginPage', () => {
   });
 
   it('should have a link to the register page', () => {
-    const registerLink = fixture.debugElement.query(
-      By.css('a[routerLink="/auth/register"]'),
-    );
+    const registerLink = fixture.debugElement.query(By.css('a[routerLink="/auth/register"]'));
     expect(registerLink).toBeTruthy();
-    expect(
-      registerLink.nativeElement.textContent.trim().toLowerCase(),
-    ).toContain('register');
+    expect(registerLink.nativeElement.textContent.trim().toLowerCase()).toContain('register');
   });
 
   it('should mark all fields as touched on submit with invalid form', () => {
@@ -224,9 +208,7 @@ describe('LoginPage', () => {
   });
 
   it('should reset loading to false on login error', () => {
-    authServiceMock.login.mockReturnValue(
-      throwError(() => ({ status: 401 })),
-    );
+    authServiceMock.login.mockReturnValue(throwError(() => ({ status: 401 })));
 
     component.form.controls.email.setValue('bad@b.com');
     component.form.controls.password.setValue('wrong');

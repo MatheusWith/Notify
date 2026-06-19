@@ -1,17 +1,18 @@
 import { TestBed } from '@angular/core/testing';
-import {
-  HttpTestingController,
-  provideHttpClientTesting,
-} from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { AuthService } from './auth.service';
+
+interface WindowWithConfig {
+  __RUNTIME_CONFIG?: { apiUrl: string };
+}
 
 describe('AuthService', () => {
   let service: AuthService;
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
-    (window as any).__RUNTIME_CONFIG = { apiUrl: 'http://test' };
+    (window as unknown as WindowWithConfig).__RUNTIME_CONFIG = { apiUrl: 'http://test' };
 
     TestBed.configureTestingModule({
       providers: [provideHttpClient(), provideHttpClientTesting()],
@@ -24,7 +25,7 @@ describe('AuthService', () => {
   afterEach(() => {
     httpMock.verify();
     sessionStorage.clear();
-    delete (window as any).__RUNTIME_CONFIG;
+    delete (window as unknown as WindowWithConfig).__RUNTIME_CONFIG;
   });
 
   it('should be created', () => {
@@ -44,22 +45,14 @@ describe('AuthService', () => {
       expiresIn: 900,
     };
 
-    service
-      .login({ email: 'a@b.com', password: 'Secret1!' })
-      .subscribe();
+    service.login({ email: 'a@b.com', password: 'Secret1!' }).subscribe();
 
-    const req = httpMock.expectOne((request) =>
-      request.url.includes('/auth/login'),
-    );
+    const req = httpMock.expectOne((request) => request.url.includes('/auth/login'));
     expect(req.request.method).toBe('POST');
     req.flush(mockResponse);
 
-    expect(sessionStorage.getItem('notify_access_token')).toBe(
-      'test-access-token',
-    );
-    expect(sessionStorage.getItem('notify_refresh_token')).toBe(
-      'test-refresh-token',
-    );
+    expect(sessionStorage.getItem('notify_access_token')).toBe('test-access-token');
+    expect(sessionStorage.getItem('notify_refresh_token')).toBe('test-refresh-token');
   });
 
   it('should restore tokens from sessionStorage on creation', () => {
@@ -104,9 +97,7 @@ describe('AuthService', () => {
     };
 
     service.login({ email: 'a@b.com', password: 'Secret1!' }).subscribe();
-    httpMock
-      .expectOne((req) => req.url.includes('/auth/login'))
-      .flush(loginResponse);
+    httpMock.expectOne((req) => req.url.includes('/auth/login')).flush(loginResponse);
 
     const refreshResponse = {
       accessToken: 'access-2',
@@ -117,9 +108,7 @@ describe('AuthService', () => {
 
     service.refreshToken().subscribe();
 
-    const refreshReq = httpMock.expectOne((req) =>
-      req.url.includes('/auth/refresh'),
-    );
+    const refreshReq = httpMock.expectOne((req) => req.url.includes('/auth/refresh'));
     expect(refreshReq.request.method).toBe('POST');
     expect(refreshReq.request.body).toEqual({ refreshToken: 'refresh-1' });
     refreshReq.flush(refreshResponse);

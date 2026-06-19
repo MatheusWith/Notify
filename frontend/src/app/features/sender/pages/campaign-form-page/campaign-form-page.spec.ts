@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { ActivatedRoute, provideRouter, Router } from '@angular/router';
-import { By } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { QuillModule } from 'ngx-quill';
 import { CampaignFormPage } from './campaign-form-page';
@@ -79,9 +78,7 @@ describe('CampaignFormPage (create mode)', () => {
 
     component.onSubmit();
 
-    const req = httpMock.expectOne(
-      `${API_URL}/newsletter/${slug}/campaigns`,
-    );
+    const req = httpMock.expectOne(`${API_URL}/newsletter/${slug}/campaigns`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual({
       subject: 'Test Subject',
@@ -101,11 +98,7 @@ describe('CampaignFormPage (create mode)', () => {
     fixture.detectChanges();
 
     expect(component.saving()).toBe(false);
-    expect(navigateSpy).toHaveBeenCalledWith([
-      '/sender/newsletters',
-      slug,
-      'campaigns',
-    ]);
+    expect(navigateSpy).toHaveBeenCalledWith(['/sender/newsletters', slug, 'campaigns']);
   });
 
   it('should include scheduledAt when provided', () => {
@@ -122,13 +115,11 @@ describe('CampaignFormPage (create mode)', () => {
 
     component.onSubmit();
 
-    const req = httpMock.expectOne(
-      `${API_URL}/newsletter/${slug}/campaigns`,
-    );
+    const req = httpMock.expectOne(`${API_URL}/newsletter/${slug}/campaigns`);
     const body = req.request.body as Record<string, string>;
     expect(body['scheduledAt']).toBeDefined();
     expect(body['subject']).toBe('Scheduled');
-    req.flush({} as any);
+    req.flush({});
   });
 
   it('should treat empty Quill content as invalid', () => {
@@ -154,13 +145,8 @@ describe('CampaignFormPage (create mode)', () => {
 
     component.onSubmit();
 
-    const req = httpMock.expectOne(
-      `${API_URL}/newsletter/${slug}/campaigns`,
-    );
-    req.flush(
-      { message: 'Error' },
-      { status: 400, statusText: 'Bad Request' },
-    );
+    const req = httpMock.expectOne(`${API_URL}/newsletter/${slug}/campaigns`);
+    req.flush({ message: 'Error' }, { status: 400, statusText: 'Bad Request' });
 
     fixture.detectChanges();
 
@@ -218,9 +204,7 @@ describe('CampaignFormPage (edit mode)', () => {
     expect(component.isEditMode()).toBe(true);
     expect(component.pageTitle()).toBe('Edit Campaign');
 
-    const req = httpMock.expectOne(
-      `${API_URL}/newsletter/${slug}/campaigns/${campaignId}`,
-    );
+    const req = httpMock.expectOne(`${API_URL}/newsletter/${slug}/campaigns/${campaignId}`);
     expect(req.request.method).toBe('GET');
     req.flush({
       id: campaignId,
@@ -243,9 +227,7 @@ describe('CampaignFormPage (edit mode)', () => {
     fixture.detectChanges();
 
     // Load
-    const loadReq = httpMock.expectOne(
-      `${API_URL}/newsletter/${slug}/campaigns/${campaignId}`,
-    );
+    const loadReq = httpMock.expectOne(`${API_URL}/newsletter/${slug}/campaigns/${campaignId}`);
     loadReq.flush({
       id: campaignId,
       newsletterId: 'n1',
@@ -267,15 +249,13 @@ describe('CampaignFormPage (edit mode)', () => {
 
     component.onSubmit();
 
-    const updateReq = httpMock.expectOne(
-      `${API_URL}/newsletter/${slug}/campaigns/${campaignId}`,
-    );
+    const updateReq = httpMock.expectOne(`${API_URL}/newsletter/${slug}/campaigns/${campaignId}`);
     expect(updateReq.request.method).toBe('PUT');
     expect(updateReq.request.body).toEqual({
       subject: 'Updated Subject',
       content: 'Updated content',
     });
-    updateReq.flush({} as any);
+    updateReq.flush({});
 
     fixture.detectChanges();
 

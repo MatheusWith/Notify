@@ -27,12 +27,7 @@
 
       <mat-form-field class="form-field">
         <mat-label>Subject</mat-label>
-        <input
-          matInput
-          type="text"
-          formControlName="subject"
-          placeholder="Campaign subject"
-        />
+        <input matInput type="text" formControlName="subject" placeholder="Campaign subject" />
       </mat-form-field>
 
       @if (form.controls.subject.invalid && form.controls.subject.touched) {
@@ -45,8 +40,9 @@
       }
 
       <div class="editor-wrapper">
-        <label class="editor-label">Content</label>
+        <label class="editor-label" for="campaign-content">Content</label>
         <quill-editor
+          id="campaign-content"
           formControlName="content"
           [modules]="quillModules"
           placeholder="Write your campaign content here..."
@@ -64,11 +60,7 @@
 
       <mat-form-field class="form-field">
         <mat-label>Scheduled Date (optional)</mat-label>
-        <input
-          matInput
-          type="datetime-local"
-          formControlName="scheduledAt"
-        />
+        <input matInput type="datetime-local" formControlName="scheduledAt" />
       </mat-form-field>
 
       <button

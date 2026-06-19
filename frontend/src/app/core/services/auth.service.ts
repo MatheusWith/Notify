@@ -32,7 +32,7 @@ export class AuthService {
   readonly currentUser = this.userSignal.asReadonly();
   readonly accessToken = this.accessTokenSignal.asReadonly();
 
-  constructor(private readonly http: HttpClient) {}
+  private readonly http = inject(HttpClient);
 
   login(request: LoginRequest): Observable<AuthResponse> {
     return this.http

@@ -19,11 +19,10 @@ export class SubscribersPage {
   readonly error = signal('');
 
   private readonly appConfig = inject(AppConfigService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly http = inject(HttpClient);
 
-  constructor(
-    private readonly route: ActivatedRoute,
-    private readonly http: HttpClient,
-  ) {
+  constructor() {
     const slug = this.route.snapshot.paramMap.get('slug') ?? '';
     if (slug) {
       this.loadSubscribers(slug);
