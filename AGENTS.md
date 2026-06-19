@@ -729,8 +729,21 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 ```
 <type>(<scope>): <short summary>
 
-[optional body — explain WHAT and WHY, not HOW]
+O que foi alterado:
+[Descrição concisa das modificações exatas no código]
+
+Por que foi alterado:
+[Contexto de negócios/técnico por trás da alteração]
+
+Onde interfere:
+[Impacto colateral ou áreas/módulos afetados pela mudança]
 ```
+
+Todo commit **obrigatoriamente** documenta três pilares no corpo da mensagem:
+
+1. **O que foi alterado** — Descreva de forma concisa as modificações exatas feitas no código (ex: novas funções, refatorações, remoções).
+2. **Por que foi alterado** — Explique o motivo ou o contexto de negócios/técnico por trás da alteração (ex: correção do bug #42, otimização de performance, nova feature de checkout).
+3. **Onde interfere** — Identifique o impacto colateral ou as áreas/módulos do sistema que são afetados por essa mudança (ex: afeta a renderização do front-end, altera o tempo de resposta da API X, sem impactos externos).
 
 | Type       | When to use                   |
 | ---------- | ----------------------------- |
@@ -745,9 +758,28 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 Examples:
 ```
 feat(user): add register endpoint with email verification
+
+O que foi alterado:
+Adicionado endpoint POST /api/v1/auth/register com validação de email e hash de senha.
+
+Por que foi alterado:
+Necessidade de permitir que novos usuários criem conta na plataforma (Flow 1).
+
+Onde interfere:
+Sem impactos externos — endpoints existentes não foram modificados.
+---
+
 fix(notification): handle null recipient on send
-test(user): cover duplicate email registration
-```
+
+O que foi alterado:
+Adicionada guarda null no método send() para verificar destinatário antes de enviar.
+
+Por que foi alterado:
+Correção do bug #42 — NullPointerException ao enviar notificação sem destinatário.
+
+Onde interfere:
+Afeta apenas o módulo de email, nenhuma API ou banco de dados alterado.
+---
 
 ### Pre-commit Automation (Husky + lint-staged)
 
