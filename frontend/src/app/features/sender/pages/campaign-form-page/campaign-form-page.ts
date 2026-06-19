@@ -1,6 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { AppConfigService } from '../../../../core/services/app-config.service';
 import { Campaign } from '../../../../shared/models/newsletter.types';
@@ -77,17 +83,13 @@ export class CampaignFormPage {
     this.loading.set(true);
 
     this.http
-      .get<Campaign>(
-        `${this.apiUrl}/newsletter/${this.slug}/campaigns/${this.campaignId}`,
-      )
+      .get<Campaign>(`${this.apiUrl}/newsletter/${this.slug}/campaigns/${this.campaignId}`)
       .subscribe({
         next: (campaign) => {
           this.form.patchValue({
             subject: campaign.subject,
             content: campaign.content,
-            scheduledAt: campaign.scheduledAt
-              ? campaign.scheduledAt.slice(0, 16)
-              : '',
+            scheduledAt: campaign.scheduledAt ? campaign.scheduledAt.slice(0, 16) : '',
           });
           this.loading.set(false);
         },
@@ -115,30 +117,21 @@ export class CampaignFormPage {
             `${this.apiUrl}/newsletter/${this.slug}/campaigns/${this.campaignId}`,
             body,
           )
-        : this.http.post<Campaign>(
-            `${this.apiUrl}/newsletter/${this.slug}/campaigns`,
-            body,
-          );
+        : this.http.post<Campaign>(`${this.apiUrl}/newsletter/${this.slug}/campaigns`, body);
 
     request$.subscribe({
       next: () => {
         this.saving.set(false);
 
         if (!this.isEditMode()) {
-          this.router.navigate([
-            '/sender/newsletters',
-            this.slug,
-            'campaigns',
-          ]);
+          this.router.navigate(['/sender/newsletters', this.slug, 'campaigns']);
         } else {
           this.success.set(true);
         }
       },
       error: () => {
         this.saving.set(false);
-        this.error.set(
-          'Failed to save campaign. Please check your input and try again.',
-        );
+        this.error.set('Failed to save campaign. Please check your input and try again.');
       },
     });
   }

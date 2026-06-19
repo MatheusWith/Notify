@@ -11,8 +11,8 @@ PASS=0
 FAIL=0
 SLUG="admin-announcements"
 
-green() { echo -e "\033[32m✓ PASS\033[0m $1"; ((PASS++)); }
-red()   { echo -e "\033[31m✗ FAIL\033[0m $1"; ((FAIL++)); }
+green() { echo -e "\033[32m✓ PASS\033[0m $1"; PASS=$((PASS + 1)); }
+red()   { echo -e "\033[31m✗ FAIL\033[0m $1"; FAIL=$((FAIL + 1)); }
 
 echo "========================================"
 echo "  Notify Smoke Tests (base: $BASE)"
@@ -20,8 +20,8 @@ echo "========================================"
 
 # --- F1: Default Server Block (444) ---
 echo -e "\n--- F1: Default Server Block ---"
-curl -s -o /dev/null -w "%{http_code}" -H "Host: bogus.notify.local" "http://127.0.0.1:80/" > /dev/null 2>&1
-[ $? -eq 52 ] && green "Unknown Host → 444 (curl exit 52)" || red "Default server did not return 444"
+curl -s -o /dev/null -w "%{http_code}" -H "Host: bogus.notify.local" "http://127.0.0.1:80/" > /dev/null 2>&1 && rc=0 || rc=$?
+[ "$rc" -eq 52 ] && green "Unknown Host → 444 (curl exit 52)" || red "Default server did not return 444 (rc=$rc)"
 
 # --- F2: SPA Root ---
 echo -e "\n--- F2: SPA Root ---"
