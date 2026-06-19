@@ -22,6 +22,8 @@ public class CampaignApplicationService implements CampaignUseCase {
     private final CampaignRepository campaignRepository;
     private final NewsletterRepository newsletterRepository;
 
+    private static final String CAMPAIGN_NOT_FOUND = "Campaign not found";
+
     @Override
     public CampaignResponse create(String slug, Long senderId, CreateCampaignRequest request) {
         Newsletter newsletter = findNewsletterBySlug(slug);
@@ -40,7 +42,7 @@ public class CampaignApplicationService implements CampaignUseCase {
         verifyOwnership(newsletter, senderId);
 
         Campaign campaign = campaignRepository.findById(campaignId)
-                .orElseThrow(() -> new BusinessException(404, "Campaign not found"));
+                .orElseThrow(() -> new BusinessException(404, CAMPAIGN_NOT_FOUND));
 
         return toResponse(campaign);
     }
@@ -59,12 +61,12 @@ public class CampaignApplicationService implements CampaignUseCase {
         verifyOwnership(newsletter, senderId);
 
         Campaign campaign = campaignRepository.findById(campaignId)
-                .orElseThrow(() -> new BusinessException(404, "Campaign not found"));
+                .orElseThrow(() -> new BusinessException(404, CAMPAIGN_NOT_FOUND));
 
         try {
             campaign.updateContent(request.subject(), request.content(), request.scheduledAt());
         } catch (IllegalStateException e) {
-            throw new BusinessException(409, e.getMessage());
+            throw new BusinessException(409, e.getMessage(), e);
         }
 
         campaign = campaignRepository.save(campaign);
@@ -77,7 +79,7 @@ public class CampaignApplicationService implements CampaignUseCase {
         verifyOwnership(newsletter, senderId);
 
         Campaign campaign = campaignRepository.findById(campaignId)
-                .orElseThrow(() -> new BusinessException(404, "Campaign not found"));
+                .orElseThrow(() -> new BusinessException(404, CAMPAIGN_NOT_FOUND));
 
         if (!campaign.isDeletable()) {
             throw new BusinessException(409, "Cannot delete a campaign with status " + campaign.getStatus());
@@ -92,7 +94,7 @@ public class CampaignApplicationService implements CampaignUseCase {
         verifyOwnership(newsletter, senderId);
 
         Campaign campaign = campaignRepository.findById(campaignId)
-                .orElseThrow(() -> new BusinessException(404, "Campaign not found"));
+                .orElseThrow(() -> new BusinessException(404, CAMPAIGN_NOT_FOUND));
 
         try {
             switch (request.status()) {
@@ -101,7 +103,7 @@ public class CampaignApplicationService implements CampaignUseCase {
                 default -> throw new BusinessException(400, "Cannot transition to status: " + request.status());
             }
         } catch (IllegalStateException e) {
-            throw new BusinessException(400, e.getMessage());
+            throw new BusinessException(400, e.getMessage(), e);
         }
 
         campaign = campaignRepository.save(campaign);
