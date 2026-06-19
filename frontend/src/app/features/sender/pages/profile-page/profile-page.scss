@@ -1,0 +1,79 @@
+.profile-page {
+  max-width: 36rem;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.error-notification {
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border-inline-start: 4px solid var(--mat-sys-error);
+  color: var(--mat-sys-error);
+  font-size: 0.875rem;
+}
+
+.success-notification {
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+  border-inline-start: 4px solid var(--mat-sys-tertiary);
+  color: var(--mat-sys-tertiary);
+  font-size: 0.875rem;
+}
+
+.info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.info-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--mat-sys-on-surface-variant);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.value {
+  font-size: 1rem;
+  color: var(--mat-sys-on-surface);
+}
+
+.role-badge {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: color-mix(in srgb, var(--mat-sys-primary) 12%, var(--mat-sys-surface-container));
+  color: var(--mat-sys-primary);
+  margin-right: 0.375rem;
+}
+
+.actions {
+  margin-top: 1.5rem;
+}
+
+.form-field {
+  display: block;
+  margin-bottom: 0.75rem;
+  inline-size: 100%;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}

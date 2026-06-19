@@ -1,0 +1,5 @@
+Apache Maven 3.9.9 (8e8579a9e76f7d015ee5ec7bfcdc97d260186937)
+Maven home: /home/with/.m2/wrapper/dists/apache-maven-3.9.9-bin/33b4b2b4/apache-maven-3.9.9
+Java version: 25.0.3, vendor: Arch Linux, runtime: /usr/lib/jvm/java-25-openjdk
+Default locale: en_US, platform encoding: UTF-8
+OS name: "linux", version: "7.0.11-arch1-1", arch: "amd64", family: "unix"

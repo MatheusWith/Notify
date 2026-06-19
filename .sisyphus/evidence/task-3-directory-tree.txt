@@ -1,0 +1,14 @@
+/home/with/Projects/notify/backend/src
+/home/with/Projects/notify/backend/src/main
+/home/with/Projects/notify/backend/src/main/java
+/home/with/Projects/notify/backend/src/main/java/com
+/home/with/Projects/notify/backend/src/main/java/com/notify
+/home/with/Projects/notify/backend/src/main/java/com/notify/shared
+/home/with/Projects/notify/backend/src/main/resources
+/home/with/Projects/notify/backend/src/main/resources/db
+/home/with/Projects/notify/backend/src/main/resources/db/migration
+/home/with/Projects/notify/backend/src/test
+/home/with/Projects/notify/backend/src/test/java
+/home/with/Projects/notify/backend/src/test/java/com
+/home/with/Projects/notify/backend/src/test/java/com/notify
+/home/with/Projects/notify/backend/src/test/java/com/notify/shared

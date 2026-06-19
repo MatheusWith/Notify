@@ -1,0 +1,80 @@
+<div class="auth-page">
+  <mat-card class="auth-card">
+    <mat-card-content>
+      <h2>Create Account</h2>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        @if (error) {
+          <mat-card class="error-notification" appearance="outlined">
+            <mat-card-content>{{ error }}</mat-card-content>
+          </mat-card>
+        }
+
+        <mat-form-field class="form-field">
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name" placeholder="Your name" />
+        </mat-form-field>
+
+        @if (form.controls.name.invalid && form.controls.name.touched) {
+          @if (form.controls.name.hasError('required')) {
+            <p class="field-error">Name is required</p>
+          }
+          @if (form.controls.name.hasError('minlength')) {
+            <p class="field-error">Name must be at least 2 characters</p>
+          }
+        }
+
+        <mat-form-field class="form-field">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" placeholder="you@example.com" />
+        </mat-form-field>
+
+        @if (form.controls.email.invalid && form.controls.email.touched) {
+          @if (form.controls.email.hasError('required')) {
+            <p class="field-error">Email is required</p>
+          }
+          @if (form.controls.email.hasError('email')) {
+            <p class="field-error">Valid email is required</p>
+          }
+        }
+
+        <mat-form-field class="form-field">
+          <mat-label>Password</mat-label>
+          <input
+            matInput
+            type="password"
+            formControlName="password"
+            placeholder="At least 8 characters"
+          />
+        </mat-form-field>
+
+        @if (form.controls.password.invalid && form.controls.password.touched) {
+          @if (form.controls.password.hasError('required')) {
+            <p class="field-error">Password is required</p>
+          }
+          @if (form.controls.password.hasError('minlength')) {
+            <p class="field-error">Password must be at least 8 characters</p>
+          }
+        }
+
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          class="submit-btn"
+          [disabled]="loading()"
+        >
+          @if (loading()) {
+            <mat-spinner diameter="20"></mat-spinner>
+          }
+          <span>Create Account</span>
+        </button>
+      </form>
+
+      <p class="auth-link">
+        Already have an account?
+        <a mat-button routerLink="/auth/login">Sign in</a>
+      </p>
+    </mat-card-content>
+  </mat-card>
+</div>

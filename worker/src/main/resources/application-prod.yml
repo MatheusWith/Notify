@@ -1,0 +1,23 @@
+spring:
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: notify
+    password: notify
+  mail:
+    host: mailpit
+    port: 1025
+    username:
+    password:
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

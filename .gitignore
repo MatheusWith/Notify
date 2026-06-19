@@ -1,0 +1,44 @@
+# Maven build output
+backend/target/
+backend/**/target/
+worker/target/
+worker/**/target/
+
+# Maven Wrapper binary
+backend/.mvn/wrapper/maven-wrapper.jar
+
+# Logs
+*.log
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+backend/.classpath
+backend/.factorypath
+backend/.project
+backend/.settings/
+backend/eclipse-formatter.xml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/
+frontend/dist/
+
+# Environment files (secrets)
+.env
+*.env.local
+
+# Agent / session artifacts
+.opencode/
+.sisyphus/
+graphify-out/
+
+# Python (smoke-test helpers, scripts)
+__pycache__/
+*.pyc

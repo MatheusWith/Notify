@@ -1,0 +1,7 @@
+<button
+  mat-icon-button
+  (click)="toggle()"
+  [attr.aria-label]="isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+>
+  <mat-icon>{{ isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+</button>

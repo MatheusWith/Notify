@@ -1,0 +1,46 @@
+<div class="page-container">
+  <div class="header">
+    <h2>Dashboard</h2>
+  </div>
+
+  @if (loading()) {
+    <mat-card>
+      <mat-card-content>
+        <p>Loading your newsletters...</p>
+      </mat-card-content>
+    </mat-card>
+  } @else if (error()) {
+    <mat-card>
+      <mat-card-content>
+        <h2>{{ error() }}</h2>
+      </mat-card-content>
+    </mat-card>
+  } @else if (newsletters().length === 0) {
+    <mat-card>
+      <mat-card-content>
+        <p>No newsletters yet</p>
+      </mat-card-content>
+    </mat-card>
+  } @else {
+    <div class="newsletter-grid">
+      @for (nl of newsletters(); track nl.id) {
+        <mat-card class="newsletter-card" appearance="outlined">
+          <mat-card-header>
+            <mat-card-title>{{ nl.name }}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p class="subscriber-count">
+              {{ nl.subscriberCount }} subscriber{{ nl.subscriberCount === 1 ? '' : 's' }}
+            </p>
+          </mat-card-content>
+          <mat-card-actions align="end">
+            <a mat-stroked-button [routerLink]="['/sender/newsletters', nl.slug, 'campaigns']">
+              Campaigns
+            </a>
+            <a mat-stroked-button [routerLink]="['/sender/newsletters', nl.slug]"> Subscribers </a>
+          </mat-card-actions>
+        </mat-card>
+      }
+    </div>
+  }
+</div>

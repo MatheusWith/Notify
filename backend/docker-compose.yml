@@ -1,0 +1,38 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: notify-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: notify
+      POSTGRES_USER: notify
+      POSTGRES_PASSWORD: notify
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq:4-management-alpine
+    container_name: notify-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: notify
+      RABBITMQ_DEFAULT_PASS: notify
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    restart: unless-stopped
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: notify-mailpit
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  rabbitmq_data:

@@ -1,0 +1,63 @@
+<div class="auth-page">
+  <mat-card class="auth-card">
+    <mat-card-content>
+      <h2>Sign In</h2>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        @if (error) {
+          <mat-card class="error-notification" appearance="outlined">
+            <mat-card-content>{{ error }}</mat-card-content>
+          </mat-card>
+        }
+
+        <mat-form-field class="form-field">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" placeholder="you@example.com" />
+        </mat-form-field>
+
+        @if (form.controls.email.invalid && form.controls.email.touched) {
+          @if (form.controls.email.hasError('required')) {
+            <p class="field-error">Email is required</p>
+          }
+          @if (form.controls.email.hasError('email')) {
+            <p class="field-error">Valid email is required</p>
+          }
+        }
+
+        <mat-form-field class="form-field">
+          <mat-label>Password</mat-label>
+          <input
+            matInput
+            type="password"
+            formControlName="password"
+            placeholder="Enter your password"
+          />
+        </mat-form-field>
+
+        @if (form.controls.password.invalid && form.controls.password.touched) {
+          @if (form.controls.password.hasError('required')) {
+            <p class="field-error">Password is required</p>
+          }
+        }
+
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          class="submit-btn"
+          [disabled]="loading()"
+        >
+          @if (loading()) {
+            <mat-spinner diameter="20"></mat-spinner>
+          }
+          <span>Sign In</span>
+        </button>
+      </form>
+
+      <p class="auth-link">
+        Don't have an account?
+        <a mat-button routerLink="/auth/register">Register</a>
+      </p>
+    </mat-card-content>
+  </mat-card>
+</div>

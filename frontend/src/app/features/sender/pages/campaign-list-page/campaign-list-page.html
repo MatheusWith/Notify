@@ -1,0 +1,85 @@
+<div class="page-container">
+  <div class="header">
+    <h2>Campaigns</h2>
+    <a mat-raised-button color="primary" [routerLink]="['new']"> New Campaign </a>
+  </div>
+
+  @if (loading()) {
+    <mat-card>
+      <mat-card-content>
+        <p>Loading campaigns...</p>
+      </mat-card-content>
+    </mat-card>
+  } @else if (error()) {
+    <mat-card>
+      <mat-card-content>
+        <h2>{{ error() }}</h2>
+      </mat-card-content>
+    </mat-card>
+  } @else if (campaigns().length === 0) {
+    <mat-card>
+      <mat-card-content>
+        <p>No campaigns yet</p>
+      </mat-card-content>
+    </mat-card>
+  } @else {
+    <div class="table-wrapper">
+      <table class="campaign-table">
+        <thead>
+          <tr>
+            <th>Subject</th>
+            <th>Content</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Scheduled</th>
+            <th class="cell-actions-head">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (campaign of campaigns(); track campaign.id) {
+            <tr>
+              <td class="cell-subject">{{ campaign.subject }}</td>
+              <td class="cell-content-preview">{{ getPlainTextPreview(campaign.content) }}</td>
+              <td>
+                <span
+                  class="status-tag"
+                  [class.status-draft]="campaign.status === 'DRAFT'"
+                  [class.status-pending]="campaign.status === 'PENDING'"
+                  [class.status-published]="campaign.status === 'PUBLISHED'"
+                  [class.status-sent]="campaign.status === 'SENT'"
+                >
+                  {{ campaign.status }}
+                </span>
+              </td>
+              <td>{{ campaign.createdAt | date: 'medium' }}</td>
+              <td>
+                @if (campaign.scheduledAt) {
+                  {{ campaign.scheduledAt | date: 'medium' }}
+                } @else {
+                  <span class="no-schedule">—</span>
+                }
+              </td>
+              <td>
+                <div class="cell-actions">
+                  @if (canEdit(campaign.status)) {
+                    <button mat-stroked-button [routerLink]="[campaign.id, 'edit']">Edit</button>
+
+                    <button mat-stroked-button (click)="publishCampaign(campaign.id)">
+                      Publish
+                    </button>
+
+                    <button mat-stroked-button color="warn" (click)="deleteCampaign(campaign.id)">
+                      Delete
+                    </button>
+                  } @else {
+                    <span class="no-actions">—</span>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
