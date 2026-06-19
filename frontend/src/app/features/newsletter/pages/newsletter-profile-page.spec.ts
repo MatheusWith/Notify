@@ -11,9 +11,7 @@ describe('NewsletterProfilePage', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideRouter([
-          { path: 'newsletter/:slug', component: NewsletterProfilePage },
-        ]),
+        provideRouter([{ path: 'newsletter/:slug', component: NewsletterProfilePage }]),
         provideHttpClient(),
         provideHttpClientTesting(),
       ],

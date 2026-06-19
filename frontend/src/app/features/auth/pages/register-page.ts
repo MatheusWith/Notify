@@ -57,9 +57,7 @@ export class RegisterPage {
       error: (err) => {
         this.loading.set(false);
         if (err.error?.violations?.length) {
-          this.error = err.error.violations
-            .map((v: { message: string }) => v.message)
-            .join(', ');
+          this.error = err.error.violations.map((v: { message: string }) => v.message).join(', ');
         } else if (err.error?.detail) {
           this.error = err.error.detail;
         } else {

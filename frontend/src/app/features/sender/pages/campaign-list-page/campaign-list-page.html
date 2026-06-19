@@ -1,9 +1,7 @@
 <div class="page-container">
   <div class="header">
     <h2>Campaigns</h2>
-    <a mat-raised-button color="primary" [routerLink]="['new']">
-      New Campaign
-    </a>
+    <a mat-raised-button color="primary" [routerLink]="['new']"> New Campaign </a>
   </div>
 
   @if (loading()) {
@@ -64,25 +62,13 @@
               <td>
                 <div class="cell-actions">
                   @if (canEdit(campaign.status)) {
-                    <button
-                      mat-stroked-button
-                      [routerLink]="[campaign.id, 'edit']"
-                    >
-                      Edit
-                    </button>
+                    <button mat-stroked-button [routerLink]="[campaign.id, 'edit']">Edit</button>
 
-                    <button
-                      mat-stroked-button
-                      (click)="publishCampaign(campaign.id)"
-                    >
+                    <button mat-stroked-button (click)="publishCampaign(campaign.id)">
                       Publish
                     </button>
 
-                    <button
-                      mat-stroked-button
-                      color="warn"
-                      (click)="deleteCampaign(campaign.id)"
-                    >
+                    <button mat-stroked-button color="warn" (click)="deleteCampaign(campaign.id)">
                       Delete
                     </button>
                   } @else {

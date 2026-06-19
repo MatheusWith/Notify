@@ -43,9 +43,9 @@ describe('DashboardPage', () => {
   it('should show loading state initially', () => {
     fixture.detectChanges();
     const req = httpMock.expectOne(`${API_URL}/newsletter/my`);
-    expect(
-      fixture.debugElement.query(By.css('mat-card p'))?.nativeElement.textContent,
-    ).toContain('Loading your newsletters...');
+    expect(fixture.debugElement.query(By.css('mat-card p'))?.nativeElement.textContent).toContain(
+      'Loading your newsletters...',
+    );
     req.flush([]);
   });
 
@@ -55,9 +55,9 @@ describe('DashboardPage', () => {
     req.flush([]);
     fixture.detectChanges();
 
-    expect(
-      fixture.debugElement.query(By.css('mat-card p'))?.nativeElement.textContent,
-    ).toContain('No newsletters yet');
+    expect(fixture.debugElement.query(By.css('mat-card p'))?.nativeElement.textContent).toContain(
+      'No newsletters yet',
+    );
   });
 
   it('should show error state on failure', () => {
@@ -89,9 +89,7 @@ describe('DashboardPage', () => {
   it('should render action buttons for each newsletter', () => {
     fixture.detectChanges();
     const req = httpMock.expectOne(`${API_URL}/newsletter/my`);
-    req.flush([
-      { id: '1', name: 'Tech Weekly', slug: 'tech-weekly', subscriberCount: 42 },
-    ]);
+    req.flush([{ id: '1', name: 'Tech Weekly', slug: 'tech-weekly', subscriberCount: 42 }]);
     fixture.detectChanges();
 
     const buttons = fixture.debugElement.queryAll(By.css('a[mat-stroked-button]'));

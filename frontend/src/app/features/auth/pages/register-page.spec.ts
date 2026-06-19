@@ -41,15 +41,9 @@ describe('RegisterPage', () => {
   });
 
   it('should render name, email and password input fields', () => {
-    const nameInput = fixture.debugElement.query(
-      By.css('input[formControlName="name"]'),
-    );
-    const emailInput = fixture.debugElement.query(
-      By.css('input[formControlName="email"]'),
-    );
-    const passwordInput = fixture.debugElement.query(
-      By.css('input[formControlName="password"]'),
-    );
+    const nameInput = fixture.debugElement.query(By.css('input[formControlName="name"]'));
+    const emailInput = fixture.debugElement.query(By.css('input[formControlName="email"]'));
+    const passwordInput = fixture.debugElement.query(By.css('input[formControlName="password"]'));
 
     expect(nameInput).toBeTruthy();
     expect((nameInput.nativeElement as HTMLInputElement).type).toBe('text');
@@ -60,13 +54,9 @@ describe('RegisterPage', () => {
   });
 
   it('should render submit button', () => {
-    const submitButton = fixture.debugElement.query(
-      By.css('button[type="submit"]'),
-    );
+    const submitButton = fixture.debugElement.query(By.css('button[type="submit"]'));
     expect(submitButton).toBeTruthy();
-    expect(submitButton.nativeElement.textContent.trim()).toBe(
-      'Create Account',
-    );
+    expect(submitButton.nativeElement.textContent.trim()).toBe('Create Account');
   });
 
   it('should render error notification when error property is set', () => {
@@ -146,9 +136,7 @@ describe('RegisterPage', () => {
         ],
       },
     };
-    authServiceMock.register.mockReturnValue(
-      throwError(() => violationsError),
-    );
+    authServiceMock.register.mockReturnValue(throwError(() => violationsError));
 
     component.form.controls.email.setValue('existing@b.com');
     component.form.controls.name.setValue('Alice');
@@ -162,9 +150,7 @@ describe('RegisterPage', () => {
 
   it('should show detail error on non-violation error response', () => {
     const detailError = { error: { detail: 'Email already registered' } };
-    authServiceMock.register.mockReturnValue(
-      throwError(() => detailError),
-    );
+    authServiceMock.register.mockReturnValue(throwError(() => detailError));
 
     component.form.controls.email.setValue('existing@b.com');
     component.form.controls.name.setValue('Alice');
@@ -188,9 +174,7 @@ describe('RegisterPage', () => {
   });
 
   it('should clear previous error on new submit attempt', () => {
-    authServiceMock.register.mockReturnValue(
-      throwError(() => ({ error: { detail: 'fail' } })),
-    );
+    authServiceMock.register.mockReturnValue(throwError(() => ({ error: { detail: 'fail' } })));
     component.form.controls.email.setValue('a@b.com');
     component.form.controls.name.setValue('Alice');
     component.form.controls.password.setValue('ValidPass1!');
@@ -228,13 +212,9 @@ describe('RegisterPage', () => {
   });
 
   it('should have a link to the login page', () => {
-    const loginLink = fixture.debugElement.query(
-      By.css('a[routerLink="/auth/login"]'),
-    );
+    const loginLink = fixture.debugElement.query(By.css('a[routerLink="/auth/login"]'));
     expect(loginLink).toBeTruthy();
-    expect(loginLink.nativeElement.textContent.trim().toLowerCase()).toContain(
-      'sign in',
-    );
+    expect(loginLink.nativeElement.textContent.trim().toLowerCase()).toContain('sign in');
   });
 
   it('should mark all fields as touched on submit with invalid form', () => {

@@ -3,20 +3,16 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: 'auth',
-    loadChildren: () =>
-      import('./features/auth/auth.routes').then((m) => m.authRoutes),
+    loadChildren: () => import('./features/auth/auth.routes').then((m) => m.authRoutes),
   },
   {
     path: 'newsletter',
     loadChildren: () =>
-      import('./features/newsletter/newsletter.routes').then(
-        (m) => m.newsletterRoutes,
-      ),
+      import('./features/newsletter/newsletter.routes').then((m) => m.newsletterRoutes),
   },
   {
     path: 'sender',
-    loadChildren: () =>
-      import('./features/sender/sender.routes').then((m) => m.senderRoutes),
+    loadChildren: () => import('./features/sender/sender.routes').then((m) => m.senderRoutes),
   },
   {
     path: '',

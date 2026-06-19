@@ -4,8 +4,6 @@ export const newsletterRoutes: Routes = [
   {
     path: ':slug',
     loadComponent: () =>
-      import('./pages/newsletter-profile-page').then(
-        (m) => m.NewsletterProfilePage,
-      ),
+      import('./pages/newsletter-profile-page').then((m) => m.NewsletterProfilePage),
   },
 ];

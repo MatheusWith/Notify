@@ -45,12 +45,7 @@
 
           <mat-form-field class="form-field">
             <mat-label>Email</mat-label>
-            <input
-              matInput
-              type="email"
-              formControlName="email"
-              placeholder="you@example.com"
-            />
+            <input matInput type="email" formControlName="email" placeholder="you@example.com" />
           </mat-form-field>
 
           @if (form.controls.email.invalid && form.controls.email.touched) {

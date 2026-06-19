@@ -84,7 +84,11 @@
 
 .status-pending {
   color: var(--mat-sys-on-surface-variant);
-  background: color-mix(in srgb, var(--mat-sys-on-surface-variant) 8%, var(--mat-sys-surface-container));
+  background: color-mix(
+    in srgb,
+    var(--mat-sys-on-surface-variant) 8%,
+    var(--mat-sys-surface-container)
+  );
 }
 
 .status-expired {

@@ -94,9 +94,7 @@ describe('CampaignListPage', () => {
       totalElements: 2,
     };
 
-    const req = httpMock.expectOne(
-      `${API_URL}/newsletter/${slug}/campaigns`,
-    );
+    const req = httpMock.expectOne(`${API_URL}/newsletter/${slug}/campaigns`);
     expect(req.request.method).toBe('GET');
     req.flush(mockResponse);
 
@@ -115,9 +113,7 @@ describe('CampaignListPage', () => {
   it('should show empty state when no campaigns', () => {
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(
-      `${API_URL}/newsletter/${slug}/campaigns`,
-    );
+    const req = httpMock.expectOne(`${API_URL}/newsletter/${slug}/campaigns`);
     req.flush({ content: [], totalElements: 0 });
 
     fixture.detectChanges();
@@ -126,21 +122,14 @@ describe('CampaignListPage', () => {
 
     const statusCard = fixture.debugElement.query(By.css('mat-card'));
     expect(statusCard).toBeTruthy();
-    expect(statusCard.nativeElement.textContent).toContain(
-      'No campaigns yet',
-    );
+    expect(statusCard.nativeElement.textContent).toContain('No campaigns yet');
   });
 
   it('should show error state on API failure', () => {
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(
-      `${API_URL}/newsletter/${slug}/campaigns`,
-    );
-    req.flush(
-      { message: 'Error' },
-      { status: 500, statusText: 'Server Error' },
-    );
+    const req = httpMock.expectOne(`${API_URL}/newsletter/${slug}/campaigns`);
+    req.flush({ message: 'Error' }, { status: 500, statusText: 'Server Error' });
 
     fixture.detectChanges();
 
@@ -150,9 +139,13 @@ describe('CampaignListPage', () => {
 
   it('should extract plain text preview from HTML content', () => {
     fixture.detectChanges();
-    httpMock.expectOne(`${API_URL}/newsletter/${slug}/campaigns`).flush({ content: [], totalElements: 0 });
+    httpMock
+      .expectOne(`${API_URL}/newsletter/${slug}/campaigns`)
+      .flush({ content: [], totalElements: 0 });
 
-    expect(component.getPlainTextPreview('<p>Hello <strong>World</strong></p>')).toBe('Hello World');
+    expect(component.getPlainTextPreview('<p>Hello <strong>World</strong></p>')).toBe(
+      'Hello World',
+    );
     expect(component.getPlainTextPreview('Plain text')).toBe('Plain text');
     expect(component.getPlainTextPreview('')).toBe('');
     expect(component.getPlainTextPreview(null as unknown as string)).toBe('');
@@ -192,9 +185,7 @@ describe('CampaignListPage', () => {
       totalElements: 2,
     };
 
-    const req = httpMock.expectOne(
-      `${API_URL}/newsletter/${slug}/campaigns`,
-    );
+    const req = httpMock.expectOne(`${API_URL}/newsletter/${slug}/campaigns`);
     req.flush(mockResponse);
 
     fixture.detectChanges();
@@ -225,18 +216,14 @@ describe('CampaignListPage', () => {
       totalElements: 1,
     };
 
-    const req = httpMock.expectOne(
-      `${API_URL}/newsletter/${slug}/campaigns`,
-    );
+    const req = httpMock.expectOne(`${API_URL}/newsletter/${slug}/campaigns`);
     req.flush(mockResponse);
 
     fixture.detectChanges();
 
     component.deleteCampaign('1');
 
-    const deleteReq = httpMock.expectOne(
-      `${API_URL}/newsletter/${slug}/campaigns/1`,
-    );
+    const deleteReq = httpMock.expectOne(`${API_URL}/newsletter/${slug}/campaigns/1`);
     expect(deleteReq.request.method).toBe('DELETE');
     deleteReq.flush(null);
 
@@ -265,18 +252,14 @@ describe('CampaignListPage', () => {
       totalElements: 1,
     };
 
-    const req = httpMock.expectOne(
-      `${API_URL}/newsletter/${slug}/campaigns`,
-    );
+    const req = httpMock.expectOne(`${API_URL}/newsletter/${slug}/campaigns`);
     req.flush(mockResponse);
 
     fixture.detectChanges();
 
     component.publishCampaign('1');
 
-    const patchReq = httpMock.expectOne(
-      `${API_URL}/newsletter/${slug}/campaigns/1/status`,
-    );
+    const patchReq = httpMock.expectOne(`${API_URL}/newsletter/${slug}/campaigns/1/status`);
     expect(patchReq.request.method).toBe('PATCH');
     expect(patchReq.request.body).toEqual({ status: 'PUBLISHED' });
     patchReq.flush({});

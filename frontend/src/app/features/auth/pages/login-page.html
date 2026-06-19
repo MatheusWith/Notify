@@ -12,12 +12,7 @@
 
         <mat-form-field class="form-field">
           <mat-label>Email</mat-label>
-          <input
-            matInput
-            type="email"
-            formControlName="email"
-            placeholder="you@example.com"
-          />
+          <input matInput type="email" formControlName="email" placeholder="you@example.com" />
         </mat-form-field>
 
         @if (form.controls.email.invalid && form.controls.email.touched) {
@@ -45,7 +40,13 @@
           }
         }
 
-        <button mat-raised-button color="primary" type="submit" class="submit-btn" [disabled]="loading()">
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          class="submit-btn"
+          [disabled]="loading()"
+        >
           @if (loading()) {
             <mat-spinner diameter="20"></mat-spinner>
           }

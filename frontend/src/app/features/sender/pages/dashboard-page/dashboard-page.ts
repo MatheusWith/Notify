@@ -21,17 +21,15 @@ export class DashboardPage {
   error = signal('');
 
   constructor() {
-    this.http
-      .get<NewsletterSummary[]>(`${this.appConfig.apiUrl}/newsletter/my`)
-      .subscribe({
-        next: (list) => {
-          this.newsletters.set(list);
-          this.loading.set(false);
-        },
-        error: () => {
-          this.error.set('Failed to load newsletters');
-          this.loading.set(false);
-        },
-      });
+    this.http.get<NewsletterSummary[]>(`${this.appConfig.apiUrl}/newsletter/my`).subscribe({
+      next: (list) => {
+        this.newsletters.set(list);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.error.set('Failed to load newsletters');
+        this.loading.set(false);
+      },
+    });
   }
 }

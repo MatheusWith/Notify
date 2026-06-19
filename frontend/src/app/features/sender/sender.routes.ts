@@ -11,44 +11,31 @@ export const senderRoutes: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import('./pages/dashboard-page/dashboard-page').then(
-            (m) => m.DashboardPage,
-          ),
+          import('./pages/dashboard-page/dashboard-page').then((m) => m.DashboardPage),
       },
       {
         path: 'profile',
-        loadComponent: () =>
-          import('./pages/profile-page/profile-page').then(
-            (m) => m.ProfilePage,
-          ),
+        loadComponent: () => import('./pages/profile-page/profile-page').then((m) => m.ProfilePage),
       },
       {
         path: 'newsletters/:slug',
         loadComponent: () =>
-          import('./pages/subscribers-page/subscribers-page').then(
-            (m) => m.SubscribersPage,
-          ),
+          import('./pages/subscribers-page/subscribers-page').then((m) => m.SubscribersPage),
       },
       {
         path: 'newsletters/:slug/campaigns',
         loadComponent: () =>
-          import('./pages/campaign-list-page/campaign-list-page').then(
-            (m) => m.CampaignListPage,
-          ),
+          import('./pages/campaign-list-page/campaign-list-page').then((m) => m.CampaignListPage),
       },
       {
         path: 'newsletters/:slug/campaigns/new',
         loadComponent: () =>
-          import('./pages/campaign-form-page/campaign-form-page').then(
-            (m) => m.CampaignFormPage,
-          ),
+          import('./pages/campaign-form-page/campaign-form-page').then((m) => m.CampaignFormPage),
       },
       {
         path: 'newsletters/:slug/campaigns/:id/edit',
         loadComponent: () =>
-          import('./pages/campaign-form-page/campaign-form-page').then(
-            (m) => m.CampaignFormPage,
-          ),
+          import('./pages/campaign-form-page/campaign-form-page').then((m) => m.CampaignFormPage),
       },
     ],
   },

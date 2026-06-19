@@ -46,7 +46,9 @@ describe('SubscribersPage', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-    httpMock.expectOne(`${API_URL}/newsletter/${slug}/subscribers`).flush({ content: [], totalElements: 0 });
+    httpMock
+      .expectOne(`${API_URL}/newsletter/${slug}/subscribers`)
+      .flush({ content: [], totalElements: 0 });
   });
 
   it('should have loading state initially and show loading indicator', () => {
@@ -57,7 +59,9 @@ describe('SubscribersPage', () => {
     expect(statusCard).toBeTruthy();
     expect(statusCard.nativeElement.textContent).toContain('Loading');
 
-    httpMock.expectOne(`${API_URL}/newsletter/${slug}/subscribers`).flush({ content: [], totalElements: 0 });
+    httpMock
+      .expectOne(`${API_URL}/newsletter/${slug}/subscribers`)
+      .flush({ content: [], totalElements: 0 });
   });
 
   it('should display subscribers when data loads successfully', () => {

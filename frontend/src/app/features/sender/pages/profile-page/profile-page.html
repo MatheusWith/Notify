@@ -38,7 +38,7 @@
           </div>
           <div class="info-row">
             <span class="label">Member since</span>
-            <span class="value">{{ u.createdAt | date:'mediumDate' }}</span>
+            <span class="value">{{ u.createdAt | date: 'mediumDate' }}</span>
           </div>
         </div>
 
@@ -47,9 +47,7 @@
         }
 
         <div class="actions">
-          <button mat-raised-button color="primary" (click)="startEditing()">
-            Edit Profile
-          </button>
+          <button mat-raised-button color="primary" (click)="startEditing()">Edit Profile</button>
         </div>
       }
 
@@ -88,12 +86,7 @@
             >
               Cancel
             </button>
-            <button
-              mat-raised-button
-              color="primary"
-              type="submit"
-              [disabled]="saving()"
-            >
+            <button mat-raised-button color="primary" type="submit" [disabled]="saving()">
               @if (saving()) {
                 <mat-spinner diameter="20" />
               }

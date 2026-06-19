@@ -49,18 +49,16 @@ export class NewsletterProfilePage {
   }
 
   private loadNewsletter(slug: string): void {
-    this.http
-      .get<NewsletterProfile>(`${this.appConfig.apiUrl}/newsletter/${slug}`)
-      .subscribe({
-        next: (profile) => {
-          this.newsletter.set(profile);
-          this.loading.set(false);
-        },
-        error: () => {
-          this.error.set('Newsletter not found');
-          this.loading.set(false);
-        },
-      });
+    this.http.get<NewsletterProfile>(`${this.appConfig.apiUrl}/newsletter/${slug}`).subscribe({
+      next: (profile) => {
+        this.newsletter.set(profile);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.error.set('Newsletter not found');
+        this.loading.set(false);
+      },
+    });
   }
 
   onSubmit(): void {
@@ -87,9 +85,7 @@ export class NewsletterProfilePage {
         },
         error: () => {
           this.subscribeLoading.set(false);
-          this.subscribeError.set(
-            'Something went wrong. Please try again later.',
-          );
+          this.subscribeError.set('Something went wrong. Please try again later.');
         },
       });
   }

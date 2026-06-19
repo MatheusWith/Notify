@@ -38,9 +38,10 @@ export class CampaignListPage {
     this.error.set('');
 
     this.http
-      .get<{ content: Campaign[]; totalElements: number }>(
-        `${this.apiUrl}/newsletter/${slug}/campaigns`,
-      )
+      .get<{
+        content: Campaign[];
+        totalElements: number;
+      }>(`${this.apiUrl}/newsletter/${slug}/campaigns`)
       .subscribe({
         next: (page) => {
           this.campaigns.set(page.content);
@@ -59,20 +60,17 @@ export class CampaignListPage {
       return;
     }
 
-    this.http
-      .delete(`${this.apiUrl}/newsletter/${this.slug()}/campaigns/${id}`)
-      .subscribe({
-        next: () => this.loadCampaigns(this.slug()),
-        error: () => alert('Failed to delete campaign.'),
-      });
+    this.http.delete(`${this.apiUrl}/newsletter/${this.slug()}/campaigns/${id}`).subscribe({
+      next: () => this.loadCampaigns(this.slug()),
+      error: () => alert('Failed to delete campaign.'),
+    });
   }
 
   publishCampaign(id: string): void {
     this.http
-      .patch<Campaign>(
-        `${this.apiUrl}/newsletter/${this.slug()}/campaigns/${id}/status`,
-        { status: 'PUBLISHED' },
-      )
+      .patch<Campaign>(`${this.apiUrl}/newsletter/${this.slug()}/campaigns/${id}/status`, {
+        status: 'PUBLISHED',
+      })
       .subscribe({
         next: () => this.loadCampaigns(this.slug()),
         error: () => alert('Failed to publish campaign.'),

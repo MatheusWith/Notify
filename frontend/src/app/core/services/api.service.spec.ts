@@ -30,9 +30,7 @@ describe('ApiService', () => {
       expect(response).toEqual(mockResponse);
     });
 
-    const req = httpMock.expectOne((request) =>
-      request.url.includes('/health'),
-    );
+    const req = httpMock.expectOne((request) => request.url.includes('/health'));
     expect(req.request.method).toBe('GET');
     req.flush(mockResponse);
   });

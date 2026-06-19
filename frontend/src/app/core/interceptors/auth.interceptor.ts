@@ -10,7 +10,7 @@ import { AuthService } from '../services/auth.service';
 
 export const authInterceptor: HttpInterceptorFn = (
   req: HttpRequest<unknown>,
-  next: HttpHandlerFn
+  next: HttpHandlerFn,
 ) => {
   const authService = inject(AuthService);
   const token = authService.accessToken();
@@ -34,18 +34,15 @@ export const authInterceptor: HttpInterceptorFn = (
           catchError((refreshError) => {
             authService.logout();
             return throwError(() => refreshError);
-          })
+          }),
         );
       }
       return throwError(() => error);
-    })
+    }),
   );
 };
 
-function addToken(
-  req: HttpRequest<unknown>,
-  token: string
-): HttpRequest<unknown> {
+function addToken(req: HttpRequest<unknown>, token: string): HttpRequest<unknown> {
   return req.clone({
     setHeaders: {
       Authorization: `Bearer ${token}`,
