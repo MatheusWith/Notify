@@ -2,6 +2,7 @@ package com.notify.identity.infrastructure.config;
 
 import com.notify.identity.infrastructure.security.JwtAuthenticationFilter;
 import com.notify.shared.infrastructure.ratelimit.RateLimitFilter;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +28,7 @@ public class SecurityConfig {
     private final RateLimitFilter rateLimitFilter;
 
     @Bean
+    @SuppressFBWarnings(value = "THROWS_METHOD", justification = "Spring Security API throws Exception broadly")
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -55,6 +57,7 @@ public class SecurityConfig {
     }
 
     @Bean
+    @SuppressFBWarnings(value = "THROWS_METHOD", justification = "Spring Security API throws Exception broadly")
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
