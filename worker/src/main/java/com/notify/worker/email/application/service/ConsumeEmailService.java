@@ -8,7 +8,9 @@ import com.notify.worker.email.domain.service.EmailSendingService;
 import com.notify.worker.shared.domain.BusinessException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
+@Service
 @RequiredArgsConstructor
 @Slf4j
 public class ConsumeEmailService implements ConsumeEmailUseCase {

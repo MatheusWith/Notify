@@ -33,6 +33,11 @@ export const senderRoutes: Routes = [
           import('./pages/campaign-form-page/campaign-form-page').then((m) => m.CampaignFormPage),
       },
       {
+        path: 'newsletters/:slug/campaigns/:id',
+        loadComponent: () =>
+          import('./pages/campaign-view-page/campaign-view-page').then((m) => m.CampaignViewPage),
+      },
+      {
         path: 'newsletters/:slug/campaigns/:id/edit',
         loadComponent: () =>
           import('./pages/campaign-form-page/campaign-form-page').then((m) => m.CampaignFormPage),

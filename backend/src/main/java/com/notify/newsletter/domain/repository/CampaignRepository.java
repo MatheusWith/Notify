@@ -15,6 +15,9 @@ public interface CampaignRepository {
 
     Page<Campaign> findByNewsletterIdAndStatus(UUID newsletterId, CampaignStatus status, Pageable pageable);
 
+    Page<Campaign> findByNewsletterIdWithFilters(UUID newsletterId, String search, CampaignStatus status,
+            Pageable pageable);
+
     Campaign save(Campaign campaign);
 
     void deleteById(UUID id);

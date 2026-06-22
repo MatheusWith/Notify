@@ -154,6 +154,93 @@ class CampaignControllerTest extends AbstractNewsletterIntegrationTest {
     }
 
     @Test
+    void givenSearchParam_whenListCampaigns_thenReturnsFilteredResults() {
+        Newsletter newsletter = createTestNewsletter(1L, "Search NL", "search-nl");
+        String token = loginAs("admin@notify.com", "Admin@123");
+        var headers = new HttpHeaders();
+        headers.set("Authorization", token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        var entity = new HttpEntity<>(headers);
+
+        var createRequest = new HttpEntity<>(Map.of("subject", "Special Newsletter", "content", "Content"), headers);
+        restTemplate.exchange(baseUrl() + "/search-nl/campaigns", HttpMethod.POST, createRequest, Map.class);
+
+        createRequest = new HttpEntity<>(Map.of("subject", "Regular Update", "content", "Content"), headers);
+        restTemplate.exchange(baseUrl() + "/search-nl/campaigns", HttpMethod.POST, createRequest, Map.class);
+
+        ResponseEntity<Map> response = restTemplate.exchange(baseUrl() + "/search-nl/campaigns?search=Special",
+                HttpMethod.GET, entity, Map.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        var content = (java.util.List<?>) response.getBody().get("content");
+        assertThat(content).hasSize(1);
+    }
+
+    @Test
+    void givenStatusParam_whenListCampaigns_thenReturnsFilteredResults() {
+        Newsletter newsletter = createTestNewsletter(1L, "Status NL", "status-nl");
+        String token = loginAs("admin@notify.com", "Admin@123");
+        var headers = new HttpHeaders();
+        headers.set("Authorization", token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        var entity = new HttpEntity<>(headers);
+
+        var createRequest = new HttpEntity<>(Map.of("subject", "Published One", "content", "Content"), headers);
+        ResponseEntity<Map> createResponse = restTemplate.exchange(baseUrl() + "/status-nl/campaigns", HttpMethod.POST,
+                createRequest, Map.class);
+        String campaignId = (String) createResponse.getBody().get("id");
+
+        var statusRequest = new HttpEntity<>(Map.of("status", "PUBLISHED"), headers);
+        restTemplate.exchange(baseUrl() + "/status-nl/campaigns/" + campaignId + "/status", HttpMethod.PATCH,
+                statusRequest, Map.class);
+
+        createRequest = new HttpEntity<>(Map.of("subject", "Draft Only", "content", "Content"), headers);
+        restTemplate.exchange(baseUrl() + "/status-nl/campaigns", HttpMethod.POST, createRequest, Map.class);
+
+        ResponseEntity<Map> response = restTemplate.exchange(baseUrl() + "/status-nl/campaigns?status=DRAFT",
+                HttpMethod.GET, entity, Map.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        var content = (java.util.List<?>) response.getBody().get("content");
+        assertThat(content).hasSize(1);
+    }
+
+    @Test
+    void givenSearchAndStatusParams_whenListCampaigns_thenReturnsFilteredResults() {
+        Newsletter newsletter = createTestNewsletter(1L, "Combined NL", "combined-nl");
+        String token = loginAs("admin@notify.com", "Admin@123");
+        var headers = new HttpHeaders();
+        headers.set("Authorization", token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        var entity = new HttpEntity<>(headers);
+
+        var createRequest = new HttpEntity<>(Map.of("subject", "Launch Special", "content", "Content"), headers);
+        ResponseEntity<Map> createResponse = restTemplate.exchange(baseUrl() + "/combined-nl/campaigns",
+                HttpMethod.POST, createRequest, Map.class);
+        String campaignId = (String) createResponse.getBody().get("id");
+
+        var statusRequest = new HttpEntity<>(Map.of("status", "PUBLISHED"), headers);
+        restTemplate.exchange(baseUrl() + "/combined-nl/campaigns/" + campaignId + "/status", HttpMethod.PATCH,
+                statusRequest, Map.class);
+
+        createRequest = new HttpEntity<>(Map.of("subject", "Launch Draft", "content", "Content"), headers);
+        restTemplate.exchange(baseUrl() + "/combined-nl/campaigns", HttpMethod.POST, createRequest, Map.class);
+
+        createRequest = new HttpEntity<>(Map.of("subject", "Other Thing", "content", "Content"), headers);
+        restTemplate.exchange(baseUrl() + "/combined-nl/campaigns", HttpMethod.POST, createRequest, Map.class);
+
+        ResponseEntity<Map> response = restTemplate.exchange(
+                baseUrl() + "/combined-nl/campaigns?search=Launch&status=PUBLISHED", HttpMethod.GET, entity, Map.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        var content = (java.util.List<?>) response.getBody().get("content");
+        assertThat(content).hasSize(1);
+    }
+
+    @Test
     void givenExistingCampaign_whenGetCampaign_thenReturns200() {
         Newsletter newsletter = createTestNewsletter(1L, "Get NL", "get-nl");
         String token = loginAs("admin@notify.com", "Admin@123");

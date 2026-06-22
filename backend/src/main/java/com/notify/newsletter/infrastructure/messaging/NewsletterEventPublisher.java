@@ -25,4 +25,14 @@ public class NewsletterEventPublisher {
                     return msg;
                 });
     }
+
+    public void publishCampaignPublished(CampaignPublishedMessage message) {
+        rabbitTemplate.convertAndSend(NewsletterRabbitMQConfig.EXCHANGE, NewsletterRabbitMQConfig.CAMPAIGN_ROUTING_KEY,
+                message, msg -> {
+                    msg.getMessageProperties().setDeliveryMode(MessageDeliveryMode.PERSISTENT);
+                    msg.getMessageProperties().setMessageId(message.messageId().toString());
+                    msg.getMessageProperties().setContentType("application/json");
+                    return msg;
+                });
+    }
 }

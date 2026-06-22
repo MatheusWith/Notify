@@ -8,8 +8,8 @@
 | Worker      | Java 17 · Spring Boot 4.0.6 · JAR packaging         |
 | Frontend    | Angular 22 · TypeScript 6.0                         |
 | Database    | PostgreSQL                                          |
-| Gateway     | Nginx (Alpine) — único ponto de entrada             |
-| Container   | Docker Compose (6 serviços)                         |
+| Gateway     | Nginx (Alpine) — single entry point                 |
+| Container   | Docker Compose (6 services)                         |
 | Approach    | Domain-Driven Design (DDD) · Test-Driven Dev (TDD)  |
 
 ---
@@ -385,10 +385,10 @@ Backend Publish → newsletter.direct ──→ newsletter.subscription.confirma
 | `ConfirmationEmailMessageTest` | Unit (pure domain) | 10 | Construction, validation, equality |
 | `EmailDeliveryResultTest` | Unit (pure domain) | 1 | Success/failure factory methods |
 | `EmailSendingServiceTest` | Unit (pure domain) | 6 | Email validation, message creation |
-| `ConsumeEmailServiceTest` | Integração (`@SpringBootTest`) | 4 | Use case orchestration, error handling |
-| `SmtpEmailSenderTest` | Integração (Greenmail) | 3 | SMTP delivery, MIME correctness |
-| `ConfirmationEmailListenerTest` | Integração (`@SpringBootTest`) | 2 | Message routing, null handling |
-| `RetryBehaviorTest` | Integração (Testcontainers RabbitMQ) | 2 | DLX/DLQ configuration |
+| `ConsumeEmailServiceTest` | Integration (`@SpringBootTest`) | 4 | Use case orchestration, error handling |
+| `SmtpEmailSenderTest` | Integration (Greenmail) | 3 | SMTP delivery, MIME correctness |
+| `ConfirmationEmailListenerTest` | Integration (`@SpringBootTest`) | 2 | Message routing, null handling |
+| `RetryBehaviorTest` | Integration (Testcontainers RabbitMQ) | 2 | DLX/DLQ configuration |
 
 ### Running Locally
 
@@ -721,7 +721,7 @@ main            — Production-ready. Protected. Only merge via PR.
 - Coverage threshold: ≥ 80% lines, ≥ 70% branches.
 - PR title describes the change, not the ticket number.
 - PR body includes: **What** changed, **Why**, **How to test**.
-- **Every commit with testable code MUST include corresponding tests.** Todo código testável adicionado ou modificado em um commit deve vir acompanhado de seus testes (unitários, integração ou smoke conforme o contexto). Commits que introduzem lógica testável sem testes serão rejeitados na revisão.
+- **Every commit with testable code MUST include corresponding tests.** Every testable code added or modified in a commit must be accompanied by its tests (unit, integration, or smoke as appropriate). Commits that introduce testable logic without tests will be rejected during review.
 
 ### Commit Message Convention
 
@@ -730,21 +730,21 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 ```
 <type>(<scope>): <short summary>
 
-O que foi alterado:
-[Descrição concisa das modificações exatas no código]
+What changed:
+[Concise description of the exact code modifications]
 
-Por que foi alterado:
-[Contexto de negócios/técnico por trás da alteração]
+Why changed:
+[Business/technical context behind the change]
 
-Onde interfere:
-[Impacto colateral ou áreas/módulos afetados pela mudança]
+Where it affects:
+[Collateral impact or areas/modules affected by the change]
 ```
 
-Todo commit **obrigatoriamente** documenta três pilares no corpo da mensagem:
+Every commit **mandatorily** documents three pillars in the message body:
 
-1. **O que foi alterado** — Descreva de forma concisa as modificações exatas feitas no código (ex: novas funções, refatorações, remoções).
-2. **Por que foi alterado** — Explique o motivo ou o contexto de negócios/técnico por trás da alteração (ex: correção do bug #42, otimização de performance, nova feature de checkout).
-3. **Onde interfere** — Identifique o impacto colateral ou as áreas/módulos do sistema que são afetados por essa mudança (ex: afeta a renderização do front-end, altera o tempo de resposta da API X, sem impactos externos).
+1. **What changed** — Concisely describe the exact code modifications (e.g., new functions, refactoring, removals).
+2. **Why changed** — Explain the business/technical context behind the change (e.g., bug #42 fix, performance optimization, new checkout feature).
+3. **Where it affects** — Identify the collateral impact or areas/modules affected by this change (e.g., affects frontend rendering, changes API X response time, no external impact).
 
 | Type       | When to use                   |
 | ---------- | ----------------------------- |
@@ -760,26 +760,26 @@ Examples:
 ```
 feat(user): add register endpoint with email verification
 
-O que foi alterado:
-Adicionado endpoint POST /api/v1/auth/register com validação de email e hash de senha.
+What changed:
+Added POST /api/v1/auth/register endpoint with email validation and password hashing.
 
-Por que foi alterado:
-Necessidade de permitir que novos usuários criem conta na plataforma (Flow 1).
+Why changed:
+Required to allow new users to create accounts on the platform (Flow 1).
 
-Onde interfere:
-Sem impactos externos — endpoints existentes não foram modificados.
+Where it affects:
+No external impact — existing endpoints were not modified.
 ---
 
 fix(notification): handle null recipient on send
 
-O que foi alterado:
-Adicionada guarda null no método send() para verificar destinatário antes de enviar.
+What changed:
+Added null guard in send() method to check recipient before sending.
 
-Por que foi alterado:
-Correção do bug #42 — NullPointerException ao enviar notificação sem destinatário.
+Why changed:
+Bug #42 fix — NullPointerException when sending notification without recipient.
 
-Onde interfere:
-Afeta apenas o módulo de email, nenhuma API ou banco de dados alterado.
+Where it affects:
+Only affects the email module, no API or database changes.
 ---
 
 ### Pre-commit Automation (Husky + lint-staged)
@@ -872,7 +872,7 @@ Never remove existing tests from a feature unless the feature itself has actuall
 
 # Running the Application
 
-## Desenvolvimento
+## Development
 
 ### Backend (Spring Boot)
 
@@ -899,25 +899,25 @@ cd backend
 
 The application starts at `http://localhost:8080`. The `dev` profile is activated by default, reading `application-dev.yml`. Flyway runs migrations automatically on startup.
 
-## Produção (Docker Full Stack)
+## Production (Docker Full Stack)
 
 ```bash
-# Build e start todos os serviços
+# Build and start all services
 docker compose -f deploy/docker-compose.yml up --build -d
 
-# Ver status dos containers
+# Check container status
 docker compose -f deploy/docker-compose.yml ps
 
-# Logs em tempo real
+# Real-time logs
 docker compose -f deploy/docker-compose.yml logs -f
 
-# Parar e limpar volumes (dados são perdidos)
+# Stop and remove volumes (data is lost)
 docker compose -f deploy/docker-compose.yml down -v
 ```
 
-Acessar: `http://localhost:80`
+Access: `http://localhost:80`
 
-Credenciais padrão: `admin@notify.com` / `Admin@123` (ADMIN) ou `test@notify.com` / `Test@123` (USER)
+Default credentials: `admin@notify.com` / `Admin@123` (ADMIN) or `test@notify.com` / `Test@123` (USER)
 
 ### Tests
 
@@ -1022,16 +1022,16 @@ User → :80 → NGINX Gateway → /api/v1/* → Backend :8080
 | `rabbitmq`| `rabbitmq:4-management-alpine`     | —             | —                   |
 | `worker`  | `eclipse-temurin:17-jre-alpine`    | —             | rabbitmq            |
 
-Apenas a porta 80 é exposta ao host. Backend, banco e fila são acessíveis apenas dentro da rede Docker.
+Only port 80 is exposed to the host. Backend, database, and queue are accessible only within the Docker network.
 
 ## Nginx Configuration
 
 ### `nginx.conf` — Main configuration
 
 - Gzip compression for text assets
-- `client_max_body_size 1M`, timeouts de 5s
-- `default_server` com `return 444` — bloqueia qualquer Host não configurado
-- `resolver 127.0.0.11` para resolução DNS do Docker em runtime (upstream `backend:8080`)
+- `client_max_body_size 1M`, 5s timeouts
+- `default_server` with `return 444` — blocks any unconfigured Host
+- `resolver 127.0.0.11` for Docker DNS resolution at runtime (upstream `backend:8080`)
 
 ```nginx
 server {
@@ -1045,11 +1045,11 @@ server {
 
 | Location              | Behavior                                   |
 | --------------------- | ------------------------------------------ |
-| `/api/v1/`            | Proxy para `upstream backend` (backend:8080) com headers de forwarding |
+| `/api/v1/`            | Proxy to `upstream backend` (backend:8080) with forwarding headers |
 | `\.(js\|css\|ico\|png\|svg\|woff2?)$` | Serve do disco, `Cache-Control: public, immutable, max-age=31536000` |
 | `/`                   | `try_files $uri $uri/ /index.html` (fallback SPA) |
 
-Security headers enviados em todas as respostas:
+Security headers sent in all responses:
 - `X-Content-Type-Options: nosniff`
 - `X-Frame-Options: DENY`
 - `Referrer-Policy: strict-origin-when-cross-origin`
@@ -1063,73 +1063,73 @@ limit_conn_zone $binary_remote_addr zone=per_ip:10m;
 server_tokens off;
 ```
 
-- 10 requisições/segundo por IP na API (com burst de 20)
-- 10 conexões simultâneas por IP
-- `server_tokens off` oculta versão do Nginx
+- 10 requests/second per IP on the API (with burst of 20)
+- 10 simultaneous connections per IP
+- `server_tokens off` hides Nginx version
 
 ## Dockerfiles
 
 ### `backend/Dockerfile` — Multi-stage
 
-| Stage     | Base Image                          | Ação                    |
+| Stage     | Base Image                          | Action                  |
 | --------- | ----------------------------------- | ----------------------- |
 | `build`   | `eclipse-temurin:17-jdk-alpine`     | `apk add maven` → `mvn package` |
-| `runtime` | `eclipse-temurin:17-jre-alpine`     | `COPY` do JAR → `java -jar` |
+| `runtime` | `eclipse-temurin:17-jre-alpine`     | `COPY` JAR → `java -jar` |
 
-- `mvn dependency:go-offline` em camada separada para cache de dependências
-- `-Dspotless.check.skip=true` no build Docker (qualidade executada no CI/pre-commit, não no container)
-- Porta 8080 exposta apenas internamente
+- `mvn dependency:go-offline` in a separate layer for dependency caching
+- `-Dspotless.check.skip=true` in Docker build (quality enforced in CI/pre-commit, not in container)
+- Port 8080 exposed only internally
 
 ### `frontend/Dockerfile` — Multi-stage
 
-| Stage     | Base Image                          | Ação                         |
-| --------- | ----------------------------------- | ---------------------------- |
+| Stage     | Base Image                          | Action                         |
+| --------- | ----------------------------------- | ------------------------------ |
 | `build`   | `node:22-alpine`                    | `npm ci` → `ng build --production` |
-| `runtime` | `nginx:alpine`                      | `COPY` do `dist/` → `/usr/share/nginx/html` |
+| `runtime` | `nginx:alpine`                      | `COPY` of `dist/` → `/usr/share/nginx/html` |
 
-- `npm ci --ignore-scripts` para evitar o hook do Husky no container
+- `npm ci --ignore-scripts` to avoid Husky hook in the container
 - Build output: `dist/frontend/browser/`
-- A imagem `notify-nginx` (gateway) e `notify-frontend` usam o mesmo Dockerfile com configs diferentes
+- The `notify-nginx` (gateway) and `notify-frontend` images use the same Dockerfile with different configs
 
 ## Running the Full Stack
 
 ```bash
-# Build e start todos os serviços
+# Build and start all services
 docker compose -f deploy/docker-compose.yml up --build -d
 
-# Ver status
+# Check status
 docker compose -f deploy/docker-compose.yml ps
 
 # Logs
 docker compose -f deploy/docker-compose.yml logs -f
 
-# Parar e limpar volumes
+# Stop and remove volumes
 docker compose -f deploy/docker-compose.yml down -v
 ```
 
-Acessar: `http://localhost:80`
+Access: `http://localhost:80`
 
 ## Smoke Tests
 
-O script `deploy/smoke-test.sh` executa 12 testes de fumaça via gateway Nginx:
+The script `deploy/smoke-test.sh` runs 12 smoke tests through the Nginx gateway:
 
-| # | Teste                          | O que verifica                             |
-|---|--------------------------------|--------------------------------------------|
-| F1 | Default server blocking        | `return 444` para Host desconhecido        |
-| F2 | SPA serving                    | `GET /` → 200, contém `<title>`            |
-| F3 | SPA routing                    | Deep link → 200 (fallback index.html)      |
-| F4 | API health                     | `GET /api/v1/health` → 200                 |
-| F5 | Authentication                 | Login válido 200, inválido 401             |
-| F6 | Authorization                  | `/users/me` autenticado 200, anônimo 401   |
-| F7 | Newsletter                     | Slug existente 200, inexistente 404        |
-| F8 | Subscribers                    | Owner 200, sem auth 401                    |
+| # | Test                          | What it checks                            |
+|---|-------------------------------|-------------------------------------------|
+| F1 | Default server blocking        | `return 444` for unknown Host             |
+| F2 | SPA serving                    | `GET /` → 200, contains `<title>`         |
+| F3 | SPA routing                    | Deep link → 200 (fallback index.html)     |
+| F4 | API health                     | `GET /api/v1/health` → 200                |
+| F5 | Authentication                 | Valid login 200, invalid 401              |
+| F6 | Authorization                  | `/users/me` authenticated 200, anonymous 401 |
+| F7 | Newsletter                     | Existing slug 200, non-existent 404       |
+| F8 | Subscribers                    | Owner 200, no auth 401                    |
 | F9 | Campaign CRUD                  | Create 201, list 200, update 200, publish 200, delete 409 |
-| F10| Static assets                  | Cache-Control público e imutável (1 ano)   |
-| F11| Security headers               | X-Content-Type-Options, X-Frame-Options    |
-| F12| Rate limiting                  | 503 após ~22 requisições rápidas           |
+| F10| Static assets                  | Cache-Control public and immutable (1 year) |
+| F11| Security headers               | X-Content-Type-Options, X-Frame-Options   |
+| F12| Rate limiting                  | 503 after ~22 quick requests              |
 
 ```bash
-# Executar smoke tests localmente
+# Run smoke tests locally
 bash deploy/smoke-test.sh http://localhost:80
 ```
 
@@ -1302,8 +1302,8 @@ curl -X POST http://localhost:80/api/v1/auth/login \
 
 Returns an `AuthResponse` with `accessToken` (15min) and `refreshToken` (7d).
 
-> Em produção (Docker), todas as requisições passam pelo gateway Nginx na porta 80.
-> Localmente (dev), a API está na porta 8080 diretamente.
+> In production (Docker), all requests go through the Nginx gateway on port 80.
+> Locally (dev), the API is on port 8080 directly.
 
 ---
 

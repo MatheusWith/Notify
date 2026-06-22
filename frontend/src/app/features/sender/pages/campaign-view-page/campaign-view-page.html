@@ -1,0 +1,60 @@
+<div class="view-page">
+  <a class="back-link" [routerLink]="['/sender/newsletters', slug, 'campaigns']">
+    &larr; Back to Campaigns
+  </a>
+
+  @if (loading()) {
+    <mat-card>
+      <mat-card-content>
+        <p>Loading campaign...</p>
+      </mat-card-content>
+    </mat-card>
+  } @else if (error()) {
+    <mat-card>
+      <mat-card-content>
+        <h2>Campaign not found</h2>
+        <p>{{ error() }}</p>
+      </mat-card-content>
+    </mat-card>
+  } @else if (campaign(); as c) {
+    <div class="campaign-header">
+      <h2>{{ c.subject }}</h2>
+      <span class="status-badge" [class]="getStatusClass(c.status)">{{ c.status }}</span>
+    </div>
+
+    <div class="metadata">
+      <div class="metadata-item">
+        <span class="metadata-label">Created</span>
+        <span class="metadata-value">{{ c.createdAt | date: 'medium' }}</span>
+      </div>
+      <div class="metadata-item">
+        <span class="metadata-label">Last updated</span>
+        <span class="metadata-value">{{ c.updatedAt | date: 'medium' }}</span>
+      </div>
+      @if (c.scheduledAt) {
+        <div class="metadata-item">
+          <span class="metadata-label">Scheduled</span>
+          <span class="metadata-value">{{ c.scheduledAt | date: 'medium' }}</span>
+        </div>
+      }
+    </div>
+
+    <mat-card class="content-card" appearance="outlined">
+      <mat-card-content>
+        <div class="content-render" [innerHTML]="c.content"></div>
+      </mat-card-content>
+    </mat-card>
+
+    @if (c.status === 'DRAFT' || c.status === 'PENDING') {
+      <div class="actions-bar">
+        <a
+          mat-stroked-button
+          color="primary"
+          [routerLink]="['/sender/newsletters', slug, 'campaigns', c.id, 'edit']"
+        >
+          Edit Campaign
+        </a>
+      </div>
+    }
+  }
+</div>

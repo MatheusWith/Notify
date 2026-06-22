@@ -33,6 +33,14 @@ public class CampaignRepositoryImpl implements CampaignRepository {
     }
 
     @Override
+    public Page<Campaign> findByNewsletterIdWithFilters(UUID newsletterId, String search, CampaignStatus status,
+            Pageable pageable) {
+        String statusName = status != null ? status.name() : null;
+        return jpaRepository.findByNewsletterIdWithFilters(newsletterId, search, statusName, pageable)
+                .map(mapper::toDomain);
+    }
+
+    @Override
     public Campaign save(Campaign campaign) {
         JpaCampaignEntity entity = mapper.toJpa(campaign);
         entity = jpaRepository.save(entity);

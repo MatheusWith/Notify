@@ -4,7 +4,9 @@ import com.notify.identity.infrastructure.security.UserPrincipal;
 import com.notify.identity.interfaces.resolver.CurrentUser;
 import com.notify.newsletter.application.dto.*;
 import com.notify.newsletter.application.port.in.CampaignUseCase;
+import com.notify.newsletter.domain.model.CampaignStatus;
 import jakarta.validation.Valid;
+import java.util.Locale;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,9 +33,12 @@ public class CampaignController {
 
     @GetMapping
     public ResponseEntity<Page<CampaignResponse>> listCampaigns(@PathVariable String slug,
-            @CurrentUser UserPrincipal currentUser,
+            @CurrentUser UserPrincipal currentUser, @RequestParam(required = false) String search,
+            @RequestParam(required = false) String status,
             @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<CampaignResponse> response = campaignService.list(slug, currentUser.userId(), pageable);
+        CampaignStatus statusEnum = (status != null) ? CampaignStatus.valueOf(status.toUpperCase(Locale.ROOT)) : null;
+        Page<CampaignResponse> response = campaignService.list(slug, currentUser.userId(), search, statusEnum,
+                pageable);
         return ResponseEntity.ok(response);
     }
 

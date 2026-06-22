@@ -1,7 +1,45 @@
 <div class="page-container">
   <div class="header">
-    <h2>Campaigns</h2>
+    <h2>Campaigns ({{ totalCount() }})</h2>
     <a mat-raised-button color="primary" [routerLink]="['new']"> New Campaign </a>
+  </div>
+
+  <div class="filter-bar">
+    <div class="search-field">
+      <button class="search-btn" (click)="onSearch()" aria-label="Search">
+        <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.35-4.35"/>
+        </svg>
+      </button>
+      <input
+        class="search-input"
+        type="text"
+        placeholder="Search campaigns..."
+        [value]="searchQuery()"
+        (input)="onSearchInput($any($event.target).value)"
+        (keydown)="onSearchKeydown($event)"
+      />
+      @if (searchQuery()) {
+        <button class="clear-btn" (click)="clearSearch()" aria-label="Clear search">
+          &times;
+        </button>
+      }
+    </div>
+    <div class="status-filters">
+      <button
+        class="status-filter-btn"
+        [class.active]="filterStatus() === ''"
+        (click)="onFilterChange('')"
+      >All</button>
+      @for (status of filterStatusList; track status) {
+        <button
+          class="status-filter-btn"
+          [class.active]="filterStatus() === status"
+          (click)="onFilterChange(status)"
+        >{{ status }}</button>
+      }
+    </div>
   </div>
 
   @if (loading()) {
@@ -27,8 +65,8 @@
       <table class="campaign-table">
         <thead>
           <tr>
+            <th class="cell-index">#</th>
             <th>Subject</th>
-            <th>Content</th>
             <th>Status</th>
             <th>Created</th>
             <th>Scheduled</th>
@@ -36,10 +74,10 @@
           </tr>
         </thead>
         <tbody>
-          @for (campaign of campaigns(); track campaign.id) {
+          @for (campaign of campaigns(); track campaign.id; let i = $index) {
             <tr>
+              <td class="cell-index">{{ page() * size() + i + 1 }}</td>
               <td class="cell-subject">{{ campaign.subject }}</td>
-              <td class="cell-content-preview">{{ getPlainTextPreview(campaign.content) }}</td>
               <td>
                 <span
                   class="status-tag"
@@ -61,6 +99,8 @@
               </td>
               <td>
                 <div class="cell-actions">
+                  <button mat-stroked-button [routerLink]="[campaign.id]">View</button>
+
                   @if (canEdit(campaign.status)) {
                     <button mat-stroked-button [routerLink]="[campaign.id, 'edit']">Edit</button>
 
@@ -71,8 +111,6 @@
                     <button mat-stroked-button color="warn" (click)="deleteCampaign(campaign.id)">
                       Delete
                     </button>
-                  } @else {
-                    <span class="no-actions">—</span>
                   }
                 </div>
               </td>
@@ -81,5 +119,17 @@
         </tbody>
       </table>
     </div>
+
+    @if (totalPages() > 1) {
+      <div class="pagination">
+        <button mat-stroked-button (click)="previousPage()" [disabled]="page() === 0">
+          Previous
+        </button>
+        <span class="page-info">Page {{ page() + 1 }} of {{ totalPages() }}</span>
+        <button mat-stroked-button (click)="nextPage()" [disabled]="page() >= totalPages() - 1">
+          Next
+        </button>
+      </div>
+    }
   }
 </div>

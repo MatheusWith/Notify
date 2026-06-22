@@ -4,6 +4,7 @@ import com.notify.newsletter.application.dto.CampaignResponse;
 import com.notify.newsletter.application.dto.CampaignStatusRequest;
 import com.notify.newsletter.application.dto.CreateCampaignRequest;
 import com.notify.newsletter.application.dto.UpdateCampaignRequest;
+import com.notify.newsletter.domain.model.CampaignStatus;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +15,7 @@ public interface CampaignUseCase {
 
     CampaignResponse getById(String slug, UUID campaignId, Long senderId);
 
-    Page<CampaignResponse> list(String slug, Long senderId, Pageable pageable);
+    Page<CampaignResponse> list(String slug, Long senderId, String search, CampaignStatus status, Pageable pageable);
 
     CampaignResponse update(String slug, UUID campaignId, Long senderId, UpdateCampaignRequest request);
 

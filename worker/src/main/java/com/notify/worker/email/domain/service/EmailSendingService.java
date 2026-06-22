@@ -2,7 +2,9 @@ package com.notify.worker.email.domain.service;
 
 import com.notify.worker.shared.domain.BusinessException;
 import java.util.regex.Pattern;
+import org.springframework.stereotype.Service;
 
+@Service
 public class EmailSendingService {
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");

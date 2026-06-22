@@ -41,3 +41,7 @@ graphify-out/
 # Python (smoke-test helpers, scripts)
 __pycache__/
 *.pyc
+worker/.classpath
+worker/.factorypath
+worker/.project
+worker/.settings/

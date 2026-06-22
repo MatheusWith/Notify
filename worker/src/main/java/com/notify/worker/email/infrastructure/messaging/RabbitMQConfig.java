@@ -6,10 +6,14 @@ import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.ExchangeBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.QueueBuilder;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
+import org.springframework.amqp.support.converter.SmartMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import tools.jackson.databind.ObjectMapper;
 
 @Configuration
+@EnableRabbit
 public class RabbitMQConfig {
 
     public static final String EXCHANGE = "newsletter.direct";
@@ -45,7 +49,28 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    public SmartMessageConverter jacksonMessageConverter(ObjectMapper objectMapper) {
+        return new JacksonMessageConverter(objectMapper);
+    }
+
+    @Bean
     public Binding confirmationBinding() {
         return BindingBuilder.bind(confirmationQueue()).to(newsletterExchange()).with(CONFIRMATION_ROUTING_KEY);
+    }
+
+    @Bean
+    public Queue campaignQueue() {
+        return QueueBuilder.durable(CAMPAIGN_QUEUE).withArgument("x-dead-letter-exchange", DLX)
+                .withArgument("x-dead-letter-routing-key", CAMPAIGN_DLQ).build();
+    }
+
+    @Bean
+    public Queue campaignDeadLetterQueue() {
+        return QueueBuilder.durable(CAMPAIGN_DLQ).build();
+    }
+
+    @Bean
+    public Binding campaignBinding() {
+        return BindingBuilder.bind(campaignQueue()).to(newsletterExchange()).with(CAMPAIGN_ROUTING_KEY);
     }
 }

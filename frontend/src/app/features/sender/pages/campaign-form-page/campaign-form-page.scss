@@ -1,6 +1,6 @@
 .form-page {
   padding: 1.5rem;
-  max-width: 72rem;
+  max-width: 80rem;
   margin: 0 auto;
 }
 
@@ -40,6 +40,7 @@ h2 {
 
 .editor-wrapper {
   display: block;
+  inline-size: 100%;
   margin-bottom: 1rem;
 
   .editor-label {
@@ -47,6 +48,18 @@ h2 {
     margin-bottom: 0.25rem;
     color: var(--mat-sys-on-surface-variant);
     font-size: 0.85rem;
+  }
+
+  ::ng-deep quill-editor {
+    display: block;
+  }
+
+  ::ng-deep .ql-toolbar {
+    width: 100%;
+  }
+
+  ::ng-deep .ql-container {
+    width: 100%;
   }
 
   ::ng-deep .ql-editor {

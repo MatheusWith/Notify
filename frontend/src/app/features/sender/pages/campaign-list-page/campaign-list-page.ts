@@ -1,7 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { AppConfigService } from '../../../../core/services/app-config.service';
 import { Campaign } from '../../../../shared/models/newsletter.types';
 import { MatButtonModule } from '@angular/material/button';
@@ -24,6 +24,14 @@ export class CampaignListPage {
   readonly loading = signal(true);
   readonly error = signal('');
   readonly slug = signal('');
+  readonly page = signal(0);
+  readonly size = signal(20);
+  readonly totalPages = computed(() => Math.max(1, Math.ceil(this.totalCount() / this.size())));
+
+  readonly searchQuery = signal('');
+  readonly filterStatus = signal('');
+
+  readonly filterStatusList = ['DRAFT', 'PENDING', 'PUBLISHED', 'SENT'];
 
   constructor() {
     const slug = this.route.snapshot.paramMap.get('slug') ?? '';
@@ -33,15 +41,56 @@ export class CampaignListPage {
     }
   }
 
+  onSearchInput(value: string): void {
+    this.searchQuery.set(value);
+  }
+
+  onSearchKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      this.onSearch();
+    }
+  }
+
+  onSearch(): void {
+    this.page.set(0);
+    this.loadCampaigns(this.slug());
+  }
+
+  clearSearch(): void {
+    this.searchQuery.set('');
+    this.page.set(0);
+    this.loadCampaigns(this.slug());
+  }
+
+  onFilterChange(status: string): void {
+    this.filterStatus.set(status);
+    this.page.set(0);
+    this.loadCampaigns(this.slug());
+  }
+
   private loadCampaigns(slug: string): void {
     this.loading.set(true);
     this.error.set('');
+
+    let params = new HttpParams()
+      .set('page', this.page())
+      .set('size', this.size());
+
+    const search = this.searchQuery();
+    if (search) {
+      params = params.set('search', search);
+    }
+
+    const status = this.filterStatus();
+    if (status) {
+      params = params.set('status', status);
+    }
 
     this.http
       .get<{
         content: Campaign[];
         totalElements: number;
-      }>(`${this.apiUrl}/newsletter/${slug}/campaigns`)
+      }>(`${this.apiUrl}/newsletter/${slug}/campaigns`, { params })
       .subscribe({
         next: (page) => {
           this.campaigns.set(page.content);
@@ -75,6 +124,20 @@ export class CampaignListPage {
         next: () => this.loadCampaigns(this.slug()),
         error: () => alert('Failed to publish campaign.'),
       });
+  }
+
+  nextPage(): void {
+    if (this.page() < this.totalPages() - 1) {
+      this.page.update((p) => p + 1);
+      this.loadCampaigns(this.slug());
+    }
+  }
+
+  previousPage(): void {
+    if (this.page() > 0) {
+      this.page.update((p) => p - 1);
+      this.loadCampaigns(this.slug());
+    }
   }
 
   getPlainTextPreview(html: string): string {

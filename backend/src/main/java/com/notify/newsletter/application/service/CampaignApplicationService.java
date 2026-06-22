@@ -3,13 +3,20 @@ package com.notify.newsletter.application.service;
 import com.notify.newsletter.application.dto.*;
 import com.notify.newsletter.application.port.in.CampaignUseCase;
 import com.notify.newsletter.domain.model.Campaign;
+import com.notify.newsletter.domain.model.CampaignStatus;
 import com.notify.newsletter.domain.model.Newsletter;
+import com.notify.newsletter.domain.model.SubscriptionStatus;
 import com.notify.newsletter.domain.repository.CampaignRepository;
 import com.notify.newsletter.domain.repository.NewsletterRepository;
+import com.notify.newsletter.domain.repository.SubscriptionRepository;
+import com.notify.newsletter.infrastructure.messaging.CampaignPublishedMessage;
+import com.notify.newsletter.infrastructure.messaging.NewsletterEventPublisher;
 import com.notify.shared.application.BusinessException;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,10 +24,13 @@ import org.springframework.stereotype.Service;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class CampaignApplicationService implements CampaignUseCase {
 
     private final CampaignRepository campaignRepository;
     private final NewsletterRepository newsletterRepository;
+    private final NewsletterEventPublisher eventPublisher;
+    private final SubscriptionRepository subscriptionRepository;
 
     private static final String CAMPAIGN_NOT_FOUND = "Campaign not found";
 
@@ -48,11 +58,26 @@ public class CampaignApplicationService implements CampaignUseCase {
     }
 
     @Override
-    public Page<CampaignResponse> list(String slug, Long senderId, Pageable pageable) {
+    public Page<CampaignResponse> list(String slug, Long senderId, String search, CampaignStatus status,
+            Pageable pageable) {
         Newsletter newsletter = findNewsletterBySlug(slug);
         verifyOwnership(newsletter, senderId);
 
-        return campaignRepository.findByNewsletterId(newsletter.getId(), pageable).map(this::toResponse);
+        UUID newsletterId = newsletter.getId();
+        boolean hasSearch = search != null && !search.isBlank();
+        boolean hasStatus = status != null;
+
+        if (hasSearch) {
+            return campaignRepository
+                    .findByNewsletterIdWithFilters(newsletterId, search, hasStatus ? status : null, pageable)
+                    .map(this::toResponse);
+        }
+
+        if (hasStatus) {
+            return campaignRepository.findByNewsletterIdAndStatus(newsletterId, status, pageable).map(this::toResponse);
+        }
+
+        return campaignRepository.findByNewsletterId(newsletterId, pageable).map(this::toResponse);
     }
 
     @Override
@@ -107,7 +132,42 @@ public class CampaignApplicationService implements CampaignUseCase {
         }
 
         campaign = campaignRepository.save(campaign);
+
+        if (request.status() == CampaignStatus.PUBLISHED) {
+            publishCampaign(campaign, newsletter);
+        }
+
         return toResponse(campaign);
+    }
+
+    private void publishCampaign(Campaign campaign, Newsletter newsletter) {
+        try {
+            List<String> emails = subscriptionRepository.findByNewsletterId(newsletter.getId(), Pageable.unpaged())
+                    .stream().filter(sub -> sub.getStatus() == SubscriptionStatus.CONFIRMED)
+                    .map(sub -> sub.getEmail().value()).toList();
+
+            if (emails.isEmpty()) {
+                if (log.isWarnEnabled()) {
+                    log.warn("No confirmed subscribers for newsletter {}, skipping campaign publication",
+                            newsletter.getSlug().value());
+                }
+                return;
+            }
+
+            CampaignPublishedMessage message = new CampaignPublishedMessage(UUID.randomUUID(), campaign.getId(),
+                    campaign.getNewsletterId(), newsletter.getSlug().value(), campaign.getSubject(),
+                    campaign.getContent(), emails);
+
+            eventPublisher.publishCampaignPublished(message);
+
+            if (log.isInfoEnabled()) {
+                log.info("Published campaign {} to {} subscribers", campaign.getId(), emails.size());
+            }
+        } catch (Exception e) {
+            if (log.isErrorEnabled()) {
+                log.error("Failed to publish campaign {}: {}", campaign.getId(), e.getMessage());
+            }
+        }
     }
 
     private Newsletter findNewsletterBySlug(String slug) {
