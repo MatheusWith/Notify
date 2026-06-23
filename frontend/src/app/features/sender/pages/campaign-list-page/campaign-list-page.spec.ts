@@ -14,9 +14,15 @@ describe('CampaignListPage', () => {
   let httpMock: HttpTestingController;
   const slug = 'test-newsletter';
 
-  function createMockCampaign(id: string, overrides: Partial<{
-    subject: string; content: string; status: string; scheduledAt: string | null;
-  }> = {}): Record<string, unknown> {
+  function createMockCampaign(
+    id: string,
+    overrides: Partial<{
+      subject: string;
+      content: string;
+      status: string;
+      scheduledAt: string | null;
+    }> = {},
+  ): Record<string, unknown> {
     return {
       id,
       newsletterId: 'n1',
@@ -31,16 +37,14 @@ describe('CampaignListPage', () => {
   }
 
   function expectCampaignsRequest(page = 0, size = 20, search?: string, status?: string) {
-    return httpMock.expectOne(
-      (req) => {
-        if (req.url !== `${API_URL}/newsletter/${slug}/campaigns`) return false;
-        if (req.params.get('page') !== String(page)) return false;
-        if (req.params.get('size') !== String(size)) return false;
-        if (search !== undefined && req.params.get('search') !== search) return false;
-        if (status !== undefined && req.params.get('status') !== status) return false;
-        return true;
-      }
-    );
+    return httpMock.expectOne((req) => {
+      if (req.url !== `${API_URL}/newsletter/${slug}/campaigns`) return false;
+      if (req.params.get('page') !== String(page)) return false;
+      if (req.params.get('size') !== String(size)) return false;
+      if (search !== undefined && req.params.get('search') !== search) return false;
+      if (status !== undefined && req.params.get('status') !== status) return false;
+      return true;
+    });
   }
 
   beforeEach(async () => {
@@ -310,7 +314,10 @@ describe('CampaignListPage', () => {
   it('should show Previous as disabled on first page', () => {
     component.page.set(0);
     fixture.detectChanges();
-    expectCampaignsRequest().flush({ content: [createMockCampaign('1'), createMockCampaign('2')], totalElements: 25 });
+    expectCampaignsRequest().flush({
+      content: [createMockCampaign('1'), createMockCampaign('2')],
+      totalElements: 25,
+    });
     fixture.detectChanges();
 
     const buttons = fixture.debugElement.queryAll(By.css('.pagination button'));

@@ -72,9 +72,7 @@ export class CampaignListPage {
     this.loading.set(true);
     this.error.set('');
 
-    let params = new HttpParams()
-      .set('page', this.page())
-      .set('size', this.size());
+    let params = new HttpParams().set('page', this.page()).set('size', this.size());
 
     const search = this.searchQuery();
     if (search) {
